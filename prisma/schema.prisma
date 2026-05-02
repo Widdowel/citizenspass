@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  nin       String    @unique
+  name      String
+  email     String?
+  phone     String?
+  password  String
+  role      String    @default("CITIZEN")
+  documents Document[]
+  requests  Request[]
+  createdAt DateTime  @default(now())
+}
+
+model Document {
+  id        String    @id @default(cuid())
+  type      String
+  title     String
+  fileUrl   String?
+  qrCode    String    @unique
+  issuedAt  DateTime  @default(now())
+  expiresAt DateTime?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Request {
+  id        String   @id @default(cuid())
+  type      String
+  reason    String?
+  status    String   @default("PENDING")
+  note      String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
