@@ -8,38 +8,127 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  nin       String    @unique
-  name      String
-  email     String?
-  phone     String?
-  password  String
-  role      String    @default("CITIZEN")
-  documents Document[]
-  requests  Request[]
-  createdAt DateTime  @default(now())
+  id          String           @id @default(cuid())
+  cip         String           @unique
+  nin         String?          @unique
+  name        String
+  email       String?
+  phone       String?
+  password    String
+  role        String           @default("CITIZEN")
+  registryId  String?          @unique
+  registry    CitizenRegistry? @relation(fields: [registryId], references: [id])
+  documents   Document[]
+  requests    Request[]
+  auditLogs   AuditLog[]
+  createdAt   DateTime         @default(now())
+}
+
+model CitizenRegistry {
+  id               String    @id @default(cuid())
+  cip              String    @unique
+  firstName        String
+  lastName         String
+  middleName       String?
+  birthDate        DateTime
+  birthPlace       String
+  birthCommune     String
+  birthDepartment  String
+  gender           String
+  nationality      String    @default("Béninoise")
+  fatherName       String?
+  fatherCip        String?
+  motherName       String?
+  motherCip        String?
+  maritalStatus    String    @default("SINGLE")
+  spouseName       String?
+  spouseCip        String?
+  address          String?
+  commune          String?
+  department       String?
+  photoUrl         String?
+  biometricHash    String?
+  judicialStatus   String    @default("CLEAN")
+  judicialDetails  String?
+  fiscalStatus     String    @default("UP_TO_DATE")
+  cedeaoCardNumber String?
+  passportNumber   String?
+  enrolledAt       DateTime  @default(now())
+  lastUpdatedAt    DateTime  @updatedAt
+  user             User?
 }
 
 model Document {
-  id        String    @id @default(cuid())
-  type      String
-  title     String
-  fileUrl   String?
-  qrCode    String    @unique
-  issuedAt  DateTime  @default(now())
-  expiresAt DateTime?
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  id               String    @id @default(cuid())
+  serialNumber     String    @unique
+  type             String
+  title            String
+  fileUrl          String?
+  qrCode           String    @unique
+  payloadHash      String
+  signature        String
+  signatureAlgo    String    @default("RSA-SHA256")
+  keyId            String
+  issuingAuthority String
+  authorityCode    String
+  issuedAt         DateTime  @default(now())
+  expiresAt        DateTime?
+  validUntil       DateTime?
+  revokedAt        DateTime?
+  revokeReason     String?
+  metadata         String?
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  requestId        String?   @unique
+  request          Request?  @relation(fields: [requestId], references: [id])
 }
 
 model Request {
-  id        String   @id @default(cuid())
-  type      String
-  reason    String?
-  status    String   @default("PENDING")
-  note      String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String    @id @default(cuid())
+  type                String
+  reason              String?
+  status              String    @default("PENDING")
+  pipelineStep        String?
+  exceptionReason     String?
+  note                String?
+  autoProcessed       Boolean   @default(false)
+  processingStartedAt DateTime?
+  processingEndedAt   DateTime?
+  userId              String
+  user                User      @relation(fields: [userId], references: [id])
+  document            Document?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  actor        User?    @relation(fields: [actorId], references: [id])
+  actorType    String
+  action       String
+  resourceType String?
+  resourceId   String?
+  ip           String?
+  userAgent    String?
+  metadata     String?
+  prevHash     String?
+  hash         String
+  createdAt    DateTime @default(now())
+
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+}
+
+model SigningKey {
+  id            String    @id @default(cuid())
+  keyId         String    @unique
+  algorithm     String    @default("RSA-2048")
+  publicKey     String
+  privateKeyEnc String
+  authority     String
+  authorityCode String    @unique
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  rotatedAt     DateTime?
 }

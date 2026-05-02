@@ -3,11 +3,17 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Fingerprint } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -20,11 +26,11 @@ export default function AuthPage() {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const nin = formData.get("nin") as string;
+    const identifier = formData.get("identifier") as string;
     const password = formData.get("password") as string;
 
     const result = await signIn("credentials", {
-      nin,
+      identifier,
       password,
       redirect: false,
     });
@@ -32,7 +38,7 @@ export default function AuthPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("NIN ou mot de passe incorrect.");
+      setError("Identifiant ou mot de passe incorrect.");
     } else {
       router.push("/dashboard");
       router.refresh();
@@ -48,17 +54,18 @@ export default function AuthPage() {
           </div>
           <CardTitle className="text-2xl">Connexion CitizenPass</CardTitle>
           <CardDescription>
-            Entrez votre Numéro d&apos;Identification Nationale
+            Connectez-vous avec votre Carte d&apos;Identité Personnelle (CIP)
+            ou votre NIN
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nin">NIN (Numéro d&apos;Identification Nationale)</Label>
+              <Label htmlFor="identifier">CIP ou NIN</Label>
               <Input
-                id="nin"
-                name="nin"
-                placeholder="BEN-2024-XXXXXXXX"
+                id="identifier"
+                name="identifier"
+                placeholder="Ex: 1234-5678-9012 ou BEN-2024-XXXXXXXX"
                 required
               />
             </div>
@@ -82,6 +89,7 @@ export default function AuthPage() {
               disabled={loading}
               className="w-full bg-[#008751] hover:bg-[#006b41]"
             >
+              <Fingerprint className="w-4 h-4 mr-2" />
               {loading ? "Connexion..." : "Se connecter"}
             </Button>
           </form>
@@ -91,17 +99,25 @@ export default function AuthPage() {
             </p>
             <div className="text-xs text-gray-600 space-y-1">
               <p>
-                <span className="font-mono bg-gray-200 px-1 rounded">BEN-2024-00000001</span>{" "}
+                <span className="font-mono bg-gray-200 px-1 rounded">1234-5678-9012</span>{" "}
                 / <span className="font-mono bg-gray-200 px-1 rounded">demo123</span>{" "}
-                (Citoyen)
+                (Citoyen — Koffi Adégbola)
+              </p>
+              <p>
+                <span className="font-mono bg-gray-200 px-1 rounded">2345-6789-0123</span>{" "}
+                / <span className="font-mono bg-gray-200 px-1 rounded">demo123</span>{" "}
+                (Citoyen — Adjoa Mensah)
               </p>
               <p>
                 <span className="font-mono bg-gray-200 px-1 rounded">ADMIN-001</span>{" "}
                 / <span className="font-mono bg-gray-200 px-1 rounded">admin123</span>{" "}
-                (Admin)
+                (Administrateur)
               </p>
             </div>
           </div>
+          <p className="text-[11px] text-gray-400 text-center mt-4">
+            Hébergement souverain — République du Bénin. Loi 2009-09 sur la protection des données à caractère personnel.
+          </p>
         </CardContent>
       </Card>
     </div>

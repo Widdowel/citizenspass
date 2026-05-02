@@ -7,21 +7,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        nin: { label: "NIN", type: "text" },
+        identifier: { label: "CIP / NIN", type: "text" },
         password: { label: "Mot de passe", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.nin || !credentials?.password) return null;
+        if (!credentials?.identifier || !credentials?.password) return null;
+        const id = (credentials.identifier as string).trim();
 
-        const user = await prisma.user.findUnique({
-          where: { nin: credentials.nin as string },
+        const user = await prisma.user.findFirst({
+          where: { OR: [{ cip: id }, { nin: id }] },
         });
 
         if (!user) return null;
 
         const isValid = await compare(
           credentials.password as string,
-          user.password
+          user.password,
         );
         if (!isValid) return null;
 
@@ -30,6 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           email: user.email,
           role: user.role,
+          cip: user.cip,
           nin: user.nin,
         };
       },
@@ -38,17 +40,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role: string }).role;
-        token.nin = (user as { nin: string }).nin;
+        const u = user as { role: string; cip?: string; nin?: string | null };
+        token.role = u.role;
+        token.cip = u.cip;
+        token.nin = u.nin ?? null;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as unknown as { role: string }).role = token.role as string;
-        (session.user as unknown as { nin: string }).nin = token.nin as string;
-        (session.user as unknown as { id: string }).id = token.id as string;
+        const s = session.user as unknown as {
+          role: string;
+          cip: string;
+          nin: string | null;
+          id: string;
+        };
+        s.role = token.role as string;
+        s.cip = token.cip as string;
+        s.nin = (token.nin as string | null) ?? null;
+        s.id = token.id as string;
       }
       return session;
     },

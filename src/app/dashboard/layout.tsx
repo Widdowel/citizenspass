@@ -26,7 +26,7 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session?.user) redirect("/auth");
 
-  const user = session.user as { name?: string; nin?: string; role?: string };
+  const user = session.user as { name?: string; cip?: string; nin?: string; role?: string };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -64,7 +64,7 @@ export default async function DashboardLayout({
         <div className="p-4 border-t border-white/10">
           <div className="text-sm mb-3">
             <p className="font-medium">{user.name}</p>
-            <p className="text-white/50 text-xs">{user.nin}</p>
+            <p className="text-white/50 text-xs font-mono">CIP {user.cip}</p>
           </div>
           <form
             action={async () => {

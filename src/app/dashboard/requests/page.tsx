@@ -14,6 +14,7 @@ export default async function RequestsPage() {
   const requests = await prisma.request.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
+    include: { document: true },
   });
 
   return (
@@ -67,13 +68,29 @@ export default async function RequestsPage() {
                         {new Date(req.createdAt).toLocaleDateString("fr-FR")}
                         {req.reason && ` — ${req.reason}`}
                       </p>
+                      {req.exceptionReason && (
+                        <p className="text-sm text-orange-600 mt-1">
+                          {req.exceptionReason}
+                        </p>
+                      )}
                       {req.note && (
                         <p className="text-sm text-blue-600 mt-1">
                           Note : {req.note}
                         </p>
                       )}
                     </div>
-                    <Badge className={status.color}>{status.label}</Badge>
+                    <div className="flex flex-col items-end gap-2">
+                      <Badge className={status.color}>{status.label}</Badge>
+                      {req.document && (
+                        <Link
+                          href={`/api/documents/${req.document.id}/file`}
+                          target="_blank"
+                          className="text-xs text-[#008751] hover:underline"
+                        >
+                          Télécharger le PDF →
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

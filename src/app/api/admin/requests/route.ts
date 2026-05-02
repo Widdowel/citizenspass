@@ -7,12 +7,12 @@ export async function GET() {
   const user = session?.user as { role?: string } | undefined;
 
   if (!session?.user || user?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Non autorise" }, { status: 403 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
   const requests = await prisma.request.findMany({
     orderBy: { createdAt: "desc" },
-    include: { user: { select: { name: true, nin: true } } },
+    include: { user: { select: { name: true, cip: true } } },
   });
 
   return NextResponse.json(requests);
