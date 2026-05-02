@@ -64,6 +64,7 @@ model Document {
   type             String
   title            String
   fileUrl          String?
+  pdfBytes         Bytes?
   qrCode           String    @unique
   payloadHash      String
   signature        String

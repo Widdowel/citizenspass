@@ -1,9 +1,18 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { hashSync } from "bcryptjs";
 
-const adapter = new PrismaBetterSqlite3({ url: "file:dev.db" });
-const prisma = new PrismaClient({ adapter });
+function makePrisma() {
+  const url = process.env.TURSO_DATABASE_URL;
+  const token = process.env.TURSO_AUTH_TOKEN;
+  if (url) {
+    return new PrismaClient({ adapter: new PrismaLibSql({ url, authToken: token }) });
+  }
+  return new PrismaClient({ adapter: new PrismaBetterSqlite3({ url: "file:dev.db" }) });
+}
+
+const prisma = makePrisma();
 
 type CitizenSeed = {
   cip: string;

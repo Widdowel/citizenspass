@@ -1,9 +1,18 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
+  const tursoUrl = process.env.TURSO_DATABASE_URL;
+  const tursoToken = process.env.TURSO_AUTH_TOKEN;
+
+  if (tursoUrl) {
+    const adapter = new PrismaLibSql({ url: tursoUrl, authToken: tursoToken });
+    return new PrismaClient({ adapter });
+  }
+
   const adapter = new PrismaBetterSqlite3({ url: "file:dev.db" });
   return new PrismaClient({ adapter });
 }

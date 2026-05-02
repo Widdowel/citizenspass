@@ -1,5 +1,3 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { randomBytes } from "crypto";
 import { prisma } from "./prisma";
 import { lookupByUserId, checkEligibility, extractDataForDocument } from "./registry";
@@ -13,16 +11,6 @@ import {
   DOC_SERIAL_PREFIX,
   AUTHORITIES,
 } from "./constants";
-
-const DOCS_DIR = path.join(process.cwd(), "data", "documents");
-
-async function ensureDocsDir() {
-  await fs.mkdir(DOCS_DIR, { recursive: true });
-}
-
-export async function getDocumentPdfPath(documentId: string): Promise<string> {
-  return path.join(DOCS_DIR, `${documentId}.pdf`);
-}
 
 function generateSerial(type: string, count: number): string {
   const prefix = DOC_SERIAL_PREFIX[type] ?? "DOC";
@@ -171,13 +159,14 @@ export async function runPipeline(requestId: string, baseUrl: string) {
       verifyUrl,
     });
 
-    // Persist Document
+    // Persist Document with PDF bytes inline (Vercel-compatible)
     const doc = await prisma.document.create({
       data: {
         serialNumber,
         type: request.type,
         title: DOC_TYPES[request.type] ?? request.type,
         qrCode,
+        pdfBytes: Buffer.from(pdfBytes),
         payloadHash: signatureBundle.payloadHash,
         signature: signatureBundle.signature,
         signatureAlgo: signatureBundle.signatureAlgo,
@@ -192,8 +181,6 @@ export async function runPipeline(requestId: string, baseUrl: string) {
       },
     });
 
-    await ensureDocsDir();
-    await fs.writeFile(await getDocumentPdfPath(doc.id), pdfBytes);
     await prisma.document.update({
       where: { id: doc.id },
       data: { fileUrl: `/api/documents/${doc.id}/file` },
