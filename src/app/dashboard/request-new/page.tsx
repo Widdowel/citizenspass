@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -64,7 +64,9 @@ function formatXOF(n: number) {
 
 export default function RequestNewPage() {
   const router = useRouter();
-  const [type, setType] = useState("");
+  const searchParams = useSearchParams();
+  const initialType = searchParams.get("type") ?? "";
+  const [type, setType] = useState(initialType);
   const [reason, setReason] = useState("");
   const [step, setStep] = useState<Step>("form");
   const [bioStage, setBioStage] = useState<"idle" | "scanning" | "matched">("idle");

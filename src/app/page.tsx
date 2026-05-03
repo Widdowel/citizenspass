@@ -68,9 +68,9 @@ export default function LandingPage() {
             <Link href="/auth">
               <Button variant="outline">Se connecter</Button>
             </Link>
-            <Link href="/auth">
+            <Link href="/onboarding">
               <Button className="bg-[#008751] hover:bg-[#006b41]">
-                S&apos;inscrire
+                Activer mon CIP
               </Button>
             </Link>
           </div>
@@ -94,12 +94,12 @@ export default function LandingPage() {
             officiels en ligne. Plus besoin de faire la queue.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth">
+            <Link href="/onboarding">
               <Button
                 size="lg"
                 className="bg-[#008751] hover:bg-[#006b41] text-white px-8 h-12 text-base"
               >
-                Commencer maintenant
+                Activer mon CIP
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
