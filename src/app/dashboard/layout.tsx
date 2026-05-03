@@ -12,6 +12,7 @@ import {
   Settings,
   KeyRound,
 } from "lucide-react";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 const navItems = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -47,11 +48,10 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside className="w-64 bg-[#1E3A5F] text-white flex flex-col shrink-0 hidden md:flex">
+        <TricolorBar variant="vertical" thickness="thin" />
         <div className="p-5 border-b border-white/10">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#008751] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
+            <TricolorLogo size="sm" />
             <span className="font-bold text-lg">CitizenPass</span>
           </Link>
         </div>

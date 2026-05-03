@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Fingerprint, Smartphone, ArrowLeft, Lock, Loader2 } from "lucide-react";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -110,11 +111,13 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#008751]/5 via-white to-[#FCD116]/5 px-4">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#008751]/5 via-[#FAF7E8]/30 to-[#FCD116]/10">
+      <TricolorBar variant="vertical" thickness="thin" />
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-14 h-14 rounded-xl bg-[#008751] flex items-center justify-center mx-auto mb-4">
-            <ShieldCheck className="w-8 h-8 text-white" />
+          <div className="mx-auto mb-4">
+            <TricolorLogo size="xl" />
           </div>
           <CardTitle className="text-2xl">Connexion CitizenPass</CardTitle>
           <CardDescription>
@@ -318,6 +321,7 @@ export default function AuthPage() {
           </p>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

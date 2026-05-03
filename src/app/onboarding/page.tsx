@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 type Step = "intro" | "cip" | "scan" | "selfie" | "phone" | "success";
 
@@ -125,7 +126,9 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#008751]/5 via-white to-[#FCD116]/5 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#008751]/5 via-[#FAF7E8]/30 to-[#FCD116]/10 flex flex-col">
+      <TricolorBar variant="vertical" thickness="thin" />
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
         {/* Step indicator */}
         {step !== "intro" && step !== "success" && (
@@ -138,17 +141,17 @@ export default function OnboardingPage() {
               return (
                 <div key={s} className="flex items-center gap-2">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ring-2 ${
                       done
-                        ? "bg-emerald-500 text-white"
+                        ? "bg-[#008751] text-white ring-[#008751]"
                         : active
-                        ? "bg-[#008751] text-white"
-                        : "bg-gray-200 text-gray-400"
+                        ? "bg-[#FCD116] text-[#1E3A5F] ring-[#FCD116]"
+                        : "bg-gray-200 text-gray-400 ring-transparent"
                     }`}
                   >
                     {done ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
                   </div>
-                  {i < 3 && <div className={`w-8 h-0.5 ${done ? "bg-emerald-500" : "bg-gray-200"}`} />}
+                  {i < 3 && <div className={`w-8 h-0.5 ${done ? "bg-[#008751]" : "bg-gray-200"}`} />}
                 </div>
               );
             })}
@@ -159,8 +162,8 @@ export default function OnboardingPage() {
         {step === "intro" && (
           <Card>
             <CardHeader className="text-center">
-              <div className="w-16 h-16 rounded-2xl bg-[#008751] flex items-center justify-center mx-auto mb-4">
-                <ShieldCheck className="w-9 h-9 text-white" />
+              <div className="mx-auto mb-4">
+                <TricolorLogo size="xl" />
               </div>
               <CardTitle className="text-2xl">Bienvenue sur CitizenPass</CardTitle>
               <CardDescription className="text-base">
@@ -421,6 +424,7 @@ export default function OnboardingPage() {
             </CardContent>
           </Card>
         )}
+      </div>
       </div>
     </div>
   );

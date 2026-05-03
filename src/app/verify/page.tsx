@@ -13,6 +13,7 @@ import {
   User,
   FileText,
 } from "lucide-react";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 import type { LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -77,13 +78,12 @@ function VerifyContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#008751]/5 via-white to-[#FCD116]/5">
+    <div className="min-h-screen bg-gradient-to-br from-[#008751]/5 via-[#FAF7E8]/40 to-[#FCD116]/10">
+      <TricolorBar variant="vertical" thickness="thin" />
       <header className="border-b bg-white/80 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#008751] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
+            <TricolorLogo size="sm" />
             <span className="font-bold text-lg">CitizenPass</span>
           </Link>
           <span className="text-xs text-gray-500">Service public de vérification</span>

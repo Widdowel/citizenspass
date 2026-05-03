@@ -50,9 +50,17 @@ export default async function DigitalCipCard({ registry, cip }: Props) {
 
   return (
     <div className="relative bg-gradient-to-br from-[#008751] via-[#006b41] to-[#1E3A5F] rounded-2xl p-5 text-white shadow-xl overflow-hidden">
-      {/* Bandes drapeau Bénin en filigrane */}
-      <div className="absolute top-0 right-0 w-2 h-full bg-[#FCD116]" />
-      <div className="absolute top-0 right-2 w-2 h-full bg-[#E11829]" />
+      {/* Drapeau du Bénin en bordure verticale gauche (vert pleine hauteur) puis en haut-droite (jaune/rouge) */}
+      <div className="absolute top-0 left-0 w-3 h-full bg-[#008751] border-r border-white/10" />
+      <div className="absolute top-0 right-0 w-1.5 h-1/2 bg-[#FCD116]" />
+      <div className="absolute bottom-0 right-0 w-1.5 h-1/2 bg-[#E11829]" />
+
+      {/* Bande horizontale tricolore en bas */}
+      <div className="absolute bottom-0 left-3 right-1.5 h-1 flex">
+        <div className="flex-1 bg-[#008751]" />
+        <div className="flex-1 bg-[#FCD116]" />
+        <div className="flex-1 bg-[#E11829]" />
+      </div>
 
       {/* Header */}
       <div className="flex items-start justify-between mb-4">

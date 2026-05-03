@@ -22,6 +22,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { DOC_CATEGORIES, DOC_TYPES, DOC_AUTHORITY, AUTHORITIES, totalPrice } from "@/lib/constants";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 export const metadata = {
   title: "CitizenPass — Plateforme nationale de délivrance instantanée",
@@ -49,13 +50,14 @@ const navSections = [
 export default function PresentationPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      {/* Bande tricolore signature */}
+      <TricolorBar variant="vertical" thickness="thin" />
+
       {/* Navigation flottante */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#008751] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
+            <TricolorLogo size="sm" />
             <span className="font-bold">CitizenPass</span>
             <span className="text-xs text-gray-400 hidden sm:inline">— Présentation</span>
           </Link>
@@ -116,7 +118,7 @@ export default function PresentationPage() {
               estimés au double du timbre officiel.
             </p>
           </div>
-          <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
+          <div className="bg-[#FAF7E8] rounded-2xl p-6 space-y-4 border border-[#FCD116]/30">
             <Stat icon={Users} value="13 M" label="population du Bénin" />
             <Stat icon={Smartphone} value="9 M+" label="citoyens enrôlés ANIP" />
             <Stat icon={Globe} value="90%+" label="couverture mobile" />
@@ -456,7 +458,7 @@ function Section({
   dark?: boolean;
 }) {
   return (
-    <section id={id} className={`py-20 px-4 ${dark ? "bg-gray-50" : "bg-white"}`}>
+    <section id={id} className={`py-20 px-4 ${dark ? "bg-[#FAF7E8]" : "bg-white"}`}>
       <div className="max-w-6xl mx-auto">
         <div className="text-xs font-bold uppercase tracking-wider text-[#008751] mb-3">{eyebrow}</div>
         <h2 className="text-3xl md:text-5xl font-bold mb-10 max-w-4xl leading-tight">{title}</h2>
@@ -469,12 +471,12 @@ function Section({
 function Stat({ icon: Icon, value, label }: { icon: typeof Users; value: string; label: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-lg bg-[#008751]/10 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-[#008751]" />
+      <div className="w-10 h-10 rounded-lg bg-[#FCD116] flex items-center justify-center shadow-sm">
+        <Icon className="w-5 h-5 text-[#1E3A5F]" />
       </div>
       <div>
         <div className="font-bold text-lg">{value}</div>
-        <div className="text-xs text-gray-500">{label}</div>
+        <div className="text-xs text-gray-600">{label}</div>
       </div>
     </div>
   );
@@ -550,9 +552,11 @@ function Persona({
 
 function BigStat({ value, label, sub }: { value: string; label: string; sub: string }) {
   return (
-    <div className="text-center">
-      <div className="text-5xl font-bold text-[#008751]">{value}</div>
-      <div className="text-base font-semibold mt-2">{label}</div>
+    <div className="text-center bg-white rounded-2xl p-6 border-2 border-[#FCD116]/40 shadow-sm">
+      <div className="text-5xl font-bold text-[#008751]" style={{ textShadow: "2px 2px 0 #FCD116" }}>
+        {value}
+      </div>
+      <div className="text-base font-semibold mt-3">{label}</div>
       <div className="text-xs text-gray-500 mt-1">{sub}</div>
     </div>
   );

@@ -10,6 +10,7 @@ import {
   LogOut,
   Building2,
 } from "lucide-react";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 const ADMIN_ROLES = ["ADMIN", "ADMIN_GREFFE", "ADMIN_MAIRIE", "ADMIN_DGI"];
 
@@ -42,11 +43,10 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <aside className="w-64 bg-[#1E3A5F] text-white flex flex-col shrink-0 hidden md:flex">
+        <TricolorBar variant="vertical" thickness="thin" />
         <div className="p-5 border-b border-white/10">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#FCD116] flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-[#1E3A5F]" />
-            </div>
+            <TricolorLogo size="sm" />
             <div>
               <div className="font-bold text-sm">CitizenPass</div>
               <div className="text-xs text-white/60">

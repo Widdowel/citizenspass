@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 const features = [
   {
@@ -52,13 +53,14 @@ const steps = [
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Bande tricolore signature */}
+      <TricolorBar variant="vertical" thickness="thin" />
+
       {/* Navbar */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#008751] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
-            </div>
+            <TricolorLogo size="sm" />
             <span className="font-bold text-lg">CitizenPass</span>
           </div>
           <div className="flex gap-3 items-center">
@@ -131,7 +133,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-[#FAF7E8]">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Pourquoi <span className="text-[#008751]">CitizenPass</span> ?
@@ -195,11 +197,10 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="py-8 bg-gray-900 text-gray-400">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <TricolorBar variant="vertical" thickness="thick" />
+        <div className="max-w-6xl mx-auto px-4 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-[#008751] flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-white" />
-            </div>
+            <TricolorLogo size="sm" />
             <span className="text-white font-semibold">CitizenPass</span>
           </div>
           <p className="text-sm">
