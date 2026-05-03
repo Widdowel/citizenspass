@@ -3,6 +3,51 @@ import { createClient } from "@libsql/client";
 import { promises as fs } from "fs";
 import path from "path";
 
+type LibsqlClient = ReturnType<typeof createClient>;
+
+async function runStatementWithRetry(
+  client: LibsqlClient,
+  stmt: string,
+): Promise<"applied" | "skipped"> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      await client.execute(stmt);
+      return "applied";
+    } catch (e) {
+      const msg = (e as Error).message;
+      // Idempotence
+      if (
+        msg.includes("already exists") ||
+        msg.includes("duplicate column name") ||
+        msg.includes("no such column") ||
+        msg.includes("no such table")
+      ) {
+        return "skipped";
+      }
+      // Réseau retry-able
+      if (
+        msg.includes("ENOTFOUND") ||
+        msg.includes("ECONNRESET") ||
+        msg.includes("ETIMEDOUT") ||
+        msg.includes("fetch failed") ||
+        msg.includes("getaddrinfo")
+      ) {
+        const wait = 1000 * Math.pow(2, attempt - 1);
+        console.log(`    ↻ Erreur réseau, retry ${attempt}/4 dans ${wait}ms...`);
+        await new Promise((r) => setTimeout(r, wait));
+        lastError = e;
+        continue;
+      }
+      console.error(`    ✗ ${msg}`);
+      console.error(`    Statement : ${stmt.slice(0, 120)}...`);
+      throw e;
+    }
+  }
+  console.error("    ✗ Réseau indisponible après 4 tentatives");
+  throw lastError;
+}
+
 async function main() {
   const url = process.env.TURSO_DATABASE_URL;
   const authToken = process.env.TURSO_AUTH_TOKEN;
@@ -39,25 +84,9 @@ async function main() {
     let applied = 0;
     let skipped = 0;
     for (const stmt of statements) {
-      try {
-        await client.execute(stmt);
-        applied++;
-      } catch (e) {
-        const msg = (e as Error).message;
-        // Skip pour idempotence et migrations rejouées sur schéma évolué
-        if (
-          msg.includes("already exists") ||
-          msg.includes("duplicate column name") ||
-          msg.includes("no such column") || // colonne supprimée par migration ultérieure
-          msg.includes("no such table")     // table supprimée par migration ultérieure
-        ) {
-          skipped++;
-          continue;
-        }
-        console.error(`    ✗ ${msg}`);
-        console.error(`    Statement : ${stmt.slice(0, 120)}...`);
-        throw e;
-      }
+      const result = await runStatementWithRetry(client, stmt);
+      if (result === "applied") applied++;
+      else if (result === "skipped") skipped++;
     }
     console.log(`    ✓ ${applied} statement(s) appliqué(s), ${skipped} déjà présent(s)`);
   }
