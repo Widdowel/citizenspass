@@ -66,3 +66,6 @@ Thumbs.db
 
 # Generated documents (PDF storage)
 /data/
+
+# Vercel env (généré localement, ne pas commit)
+.env.vercel
