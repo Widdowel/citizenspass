@@ -10,6 +10,7 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "fix:env": "tsx prisma/fix-env.ts",
+    "check:turso": "tsx prisma/check-turso.ts",
     "db:push-turso": "tsx prisma/push-turso.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "prisma migrate deploy && tsx prisma/seed.ts",
