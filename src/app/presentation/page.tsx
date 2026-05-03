@@ -121,12 +121,13 @@ export default function PresentationPage() {
               signature électronique légalement reconnue (Loi 2017-20). Les briques techniques existent.
             </p>
             <p className="text-lg text-gray-700 mt-4">
-              <strong>Le maillon manquant : il n&apos;existe aujourd&apos;hui aucune application mobile
-              officielle nationale unifiée pour le citoyen.</strong> Malgré l&apos;infrastructure existante,
-              le citoyen jongle entre une dizaine de portails web (service-public.bj, eservices DGI,
-              anatt.bj, andf.bj, abrp.bj…), crée plusieurs comptes, reçoit ses documents par email
-              dispersés. Et pour les actes d&apos;état civil tenus par les mairies (mariage, résidence,
-              célibat, individualité…) le retrait reste majoritairement manuel.
+              <strong>Le maillon manquant : aucune application mobile officielle nationale ne réunit
+              ces services en une seule expérience.</strong> Le citoyen doit naviguer entre une dizaine
+              de portails web sectoriels (service-public.bj, eservices DGI, anatt.bj, andf.bj, abrp.bj…),
+              <strong> créer un compte distinct sur chacun</strong>, mémoriser plusieurs identifiants et
+              mots de passe, recevoir ses documents éparpillés dans des emails ou comptes séparés. Et
+              pour les actes d&apos;état civil tenus par les mairies (mariage, résidence, célibat,
+              individualité…) le retrait reste majoritairement manuel au guichet.
             </p>
             <p className="text-lg text-gray-700 mt-4">
               <strong className="text-[#008751]">BJ PASS s&apos;appuie sur le PKI ASIN existant et unifie l&apos;expérience.</strong>{" "}
