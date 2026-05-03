@@ -226,6 +226,124 @@ function drawBody(ctx: DrawCtx, type: string, data: ExtractedData): number {
     y -= 18;
   }
 
+  if (type === "MARRIAGE_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "ACTE DE MARIAGE");
+    y = drawFields(ctx, y, [
+      { label: "Statut matrimonial", value: maritalLabel(data.maritalStatus) },
+      { label: "Conjoint(e)", value: data.spouseName ?? "Non déclaré(e)" },
+    ]);
+  }
+
+  if (type === "INDIVIDUALITY_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "CERTIFICAT D'INDIVIDUALITÉ");
+    const { page, font } = ctx;
+    page.drawText(
+      `Il est certifié que ${data.fullName}, identifié sous le CIP ${data.cip}, est une seule et même personne, distincte de tout homonyme.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
+  if (type === "CELIBACY_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "CERTIFICAT DE CÉLIBAT");
+    const { page, font } = ctx;
+    const isSingle = data.maritalStatus === "SINGLE";
+    page.drawText(
+      isSingle
+        ? `Il est certifié que ${data.fullName} est célibataire et n'a contracté aucun mariage à ce jour selon le registre national.`
+        : `Statut matrimonial : ${maritalLabel(data.maritalStatus)}`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 35;
+  }
+
+  if (type === "COLLECTIVE_LIFE_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "CERTIFICAT DE VIE COLLECTIVE");
+    const { page, font } = ctx;
+    page.drawText(
+      `Il est certifié que ${data.fullName} est en vie à la date de délivrance du présent certificat.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 35;
+  }
+
+  if (type === "DEATH_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "ACTE DE DÉCÈS");
+    y = drawFields(ctx, y, [
+      { label: "Statut", value: "Décès enregistré au registre national" },
+    ]);
+  }
+
+  if (type === "CIP_ATTESTATION") {
+    y = drawSectionTitle(ctx, y, "ATTESTATION CIP — IDENTIFIANT NATIONAL");
+    const { page, font } = ctx;
+    page.drawText(
+      `L'Agence Nationale d'Identification atteste que la Carte d'Identité Personnelle ${data.cip} est valide et active dans le registre national des personnes physiques.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
+  if (type === "CEDEAO_PASSPORT_ATTESTATION") {
+    y = drawSectionTitle(ctx, y, "ATTESTATION DE PASSEPORT CEDEAO");
+    y = drawFields(ctx, y, [
+      { label: "Identifiant CIP", value: data.cip },
+      { label: "Nationalité", value: data.nationality },
+      { label: "Validité CEDEAO", value: "Permet la libre circulation dans l'espace CEDEAO" },
+    ]);
+  }
+
+  if (type === "NON_CONVICTION_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "CERTIFICAT DE NON-CONDAMNATION");
+    const { page, font } = ctx;
+    page.drawText(
+      `Il est certifié qu'aucune condamnation pénale n'est inscrite au casier judiciaire de ${data.fullName} (CIP ${data.cip}) à la date de délivrance.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
+  if (type === "NON_BANKRUPTCY_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "CERTIFICAT DE NON-FAILLITE");
+    const { page, font } = ctx;
+    page.drawText(
+      `Il est certifié qu'aucune procédure collective (faillite, redressement) n'est inscrite contre ${data.fullName} au registre du commerce.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
+  if (type === "DOMICILE_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "DOMICILE DÉCLARÉ");
+    y = drawFields(ctx, y, [
+      { label: "Adresse", value: data.address ?? "—" },
+      { label: "Commune", value: data.commune ?? "—" },
+      { label: "Département", value: data.department ?? "—" },
+    ]);
+  }
+
+  if (type === "IFU_ATTESTATION") {
+    y = drawSectionTitle(ctx, y, "IDENTIFIANT FISCAL UNIQUE");
+    y = drawFields(ctx, y, [
+      { label: "IFU rattaché au CIP", value: data.cip },
+      { label: "Statut", value: "Actif et opérationnel" },
+    ]);
+  }
+
+  if (type === "VAT_PAYMENT_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "ATTESTATION DE PAIEMENT TVA");
+    y = drawFields(ctx, y, [
+      { label: "Statut TVA", value: data.fiscalStatus === "UP_TO_DATE" ? "À jour" : "Non à jour" },
+    ]);
+  }
+
+  if (type === "PATENTE_CERTIFICATE") {
+    y = drawSectionTitle(ctx, y, "QUITUS PATENTE");
+    y = drawFields(ctx, y, [
+      { label: "Statut patente", value: data.fiscalStatus === "UP_TO_DATE" ? "À jour" : "Non à jour" },
+    ]);
+  }
+
   return y;
 }
 

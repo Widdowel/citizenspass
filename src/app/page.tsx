@@ -61,7 +61,10 @@ export default function LandingPage() {
             </div>
             <span className="font-bold text-lg">CitizenPass</span>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
+            <Link href="/presentation">
+              <Button variant="ghost" className="text-sm">Présentation</Button>
+            </Link>
             <Link href="/auth">
               <Button variant="outline">Se connecter</Button>
             </Link>

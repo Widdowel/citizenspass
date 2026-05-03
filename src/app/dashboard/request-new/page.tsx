@@ -24,16 +24,20 @@ import {
   CreditCard,
   Smartphone,
 } from "lucide-react";
-import { PIPELINE_STEPS, DOC_PRICING, totalPrice, PAYMENT_METHODS, type PaymentMethod } from "@/lib/constants";
+import { PIPELINE_STEPS, DOC_PRICING, totalPrice, PAYMENT_METHODS, type PaymentMethod, DOC_TYPES, DOC_AUTHORITY, AUTHORITIES, DOC_CATEGORIES } from "@/lib/constants";
 import Link from "next/link";
 
-const docTypes = [
-  { value: "BIRTH_CERTIFICATE", label: "Acte de naissance", authority: "Mairie de Cotonou" },
-  { value: "CRIMINAL_RECORD", label: "Casier judiciaire (Bulletin n°3)", authority: "Cour d'Appel de Cotonou" },
-  { value: "RESIDENCE_CERTIFICATE", label: "Certificat de résidence", authority: "Mairie de Cotonou" },
-  { value: "NATIONALITY_CERTIFICATE", label: "Certificat de nationalité", authority: "Cour d'Appel de Cotonou" },
-  { value: "TAX_CERTIFICATE", label: "Quitus fiscal", authority: "Direction Générale des Impôts" },
-];
+const docTypesByCategory = Object.entries(DOC_CATEGORIES).map(([catKey, cat]) => ({
+  category: cat.label,
+  catKey,
+  items: cat.types.map((value) => ({
+    value,
+    label: DOC_TYPES[value],
+    authority: AUTHORITIES[DOC_AUTHORITY[value]]?.name ?? "—",
+  })),
+}));
+
+const docTypes = docTypesByCategory.flatMap((c) => c.items);
 
 const stepIcons: Record<string, typeof Database> = {
   VERIFYING: Fingerprint,
@@ -553,16 +557,23 @@ export default function RequestNewPage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Choisir un type de document" />
                 </SelectTrigger>
-                <SelectContent>
-                  {docTypes.map((dt) => (
-                    <SelectItem key={dt.value} value={dt.value}>
-                      <div className="flex flex-col">
-                        <span>{dt.label}</span>
-                        <span className="text-xs text-gray-400">
-                          {dt.authority} — {formatXOF(totalPrice(dt.value))}
-                        </span>
+                <SelectContent className="max-h-[60vh]">
+                  {docTypesByCategory.map((cat) => (
+                    <div key={cat.catKey}>
+                      <div className="px-2 py-1.5 text-[11px] uppercase font-bold tracking-wider text-gray-500 bg-gray-50">
+                        {cat.category}
                       </div>
-                    </SelectItem>
+                      {cat.items.map((dt) => (
+                        <SelectItem key={dt.value} value={dt.value}>
+                          <div className="flex flex-col">
+                            <span>{dt.label}</span>
+                            <span className="text-xs text-gray-400">
+                              {dt.authority} — {formatXOF(totalPrice(dt.value))}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </div>
                   ))}
                 </SelectContent>
               </Select>

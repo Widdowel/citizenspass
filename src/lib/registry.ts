@@ -55,28 +55,37 @@ export function checkEligibility(
   documentType: string,
 ): EligibilityCheck {
   switch (documentType) {
+    // ===== ÉTAT CIVIL =====
     case "BIRTH_CERTIFICATE":
-      // Toujours éligible si le citoyen est dans le registre
+    case "INDIVIDUALITY_CERTIFICATE":
+    case "COLLECTIVE_LIFE_CERTIFICATE":
       return { eligible: true };
 
-    case "CRIMINAL_RECORD":
-      if (citizen.judicialStatus === "ONGOING") {
+    case "MARRIAGE_CERTIFICATE":
+      if (citizen.maritalStatus !== "MARRIED" && citizen.maritalStatus !== "DIVORCED" && citizen.maritalStatus !== "WIDOWED") {
         return {
           eligible: false,
-          exceptionReason:
-            "Une procédure judiciaire est en cours. Le bulletin n°3 ne peut être délivré automatiquement. Une revue par le greffe de la Cour d'Appel est requise.",
+          exceptionReason: "Aucun mariage enregistré pour ce citoyen.",
         };
       }
       return { eligible: true };
 
-    case "RESIDENCE_CERTIFICATE":
-      if (!citizen.address || !citizen.commune) {
+    case "DEATH_CERTIFICATE":
+      // Cas particulier : à demander par un proche, ici simplifié
+      return { eligible: true };
+
+    case "CELIBACY_CERTIFICATE":
+      if (citizen.maritalStatus === "MARRIED") {
         return {
           eligible: false,
-          exceptionReason:
-            "Aucune adresse de résidence enregistrée au registre. Mise à jour ANIP requise.",
+          exceptionReason: "Citoyen enregistré comme marié. Certificat de célibat non délivrable.",
         };
       }
+      return { eligible: true };
+
+    // ===== IDENTITÉ =====
+    case "CIP_ATTESTATION":
+    case "CEDEAO_PASSPORT_ATTESTATION":
       return { eligible: true };
 
     case "NATIONALITY_CERTIFICATE":
@@ -88,18 +97,75 @@ export function checkEligibility(
       }
       return { eligible: true };
 
+    // ===== JUDICIAIRE =====
+    case "CRIMINAL_RECORD":
+    case "NON_CONVICTION_CERTIFICATE":
+      if (citizen.judicialStatus === "ONGOING") {
+        return {
+          eligible: false,
+          exceptionReason:
+            "Une procédure judiciaire est en cours. Une revue par le greffe de la Cour d'Appel est requise.",
+        };
+      }
+      if (citizen.judicialStatus === "CONVICTED") {
+        return {
+          eligible: false,
+          exceptionReason:
+            "Une condamnation est inscrite au casier. Document non délivrable.",
+        };
+      }
+      return { eligible: true };
+
+    case "NON_BANKRUPTCY_CERTIFICATE":
+      // Vérification commerce : réutilise judicialStatus en démo
+      return { eligible: true };
+
+    // ===== FISCAL =====
     case "TAX_CERTIFICATE":
       if (citizen.fiscalStatus === "OVERDUE") {
         return {
           eligible: false,
           exceptionReason:
-            "Situation fiscale non régularisée. Le quitus ne peut être délivré. Contactez la DGI.",
+            "Situation fiscale non régularisée. Le quitus ne peut être délivré.",
         };
       }
       if (citizen.fiscalStatus === "PENDING") {
         return {
           eligible: true,
           warnings: ["Régularisation fiscale en cours — quitus délivré sous réserve."],
+        };
+      }
+      return { eligible: true };
+
+    case "IFU_ATTESTATION":
+      return { eligible: true };
+
+    case "VAT_PAYMENT_CERTIFICATE":
+      if (citizen.fiscalStatus === "OVERDUE") {
+        return {
+          eligible: false,
+          exceptionReason: "Paiement TVA en retard. Régularisation requise.",
+        };
+      }
+      return { eligible: true };
+
+    case "PATENTE_CERTIFICATE":
+      if (citizen.fiscalStatus === "OVERDUE") {
+        return {
+          eligible: false,
+          exceptionReason: "Patente non à jour. Régularisation requise.",
+        };
+      }
+      return { eligible: true };
+
+    // ===== MUNICIPAL =====
+    case "RESIDENCE_CERTIFICATE":
+    case "DOMICILE_CERTIFICATE":
+      if (!citizen.address || !citizen.commune) {
+        return {
+          eligible: false,
+          exceptionReason:
+            "Aucune adresse de résidence enregistrée au registre. Mise à jour ANIP requise.",
         };
       }
       return { eligible: true };
