@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/lib/audit";
+import {
+  checkRateLimit,
+  recordRateLimit,
+  isAccountLocked,
+  clientIp,
+  RATE_LIMITS,
+} from "@/lib/security";
 
 function maskPhone(phone: string | null): string {
   if (!phone) return "+229 ** ** ** **";
-  // Garde indicatif + 2 derniers chiffres
   const cleaned = phone.replace(/\s+/g, "");
   if (cleaned.length < 4) return "+229 ** ** ** **";
   const last2 = cleaned.slice(-2);
@@ -16,12 +23,27 @@ function generateOtp(): string {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = clientIp(req);
   const { identifier } = (await req.json()) as { identifier?: string };
   if (!identifier) {
     return NextResponse.json({ error: "Identifiant requis" }, { status: 400 });
   }
 
   const id = identifier.trim();
+
+  // Rate limit par IP (anti-spam)
+  const rl = await checkRateLimit(RATE_LIMITS.OTP_REQUEST, ip);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      {
+        error: "Trop de demandes. Réessayez plus tard.",
+        retryAfter: rl.resetAt.toISOString(),
+      },
+      { status: 429 },
+    );
+  }
+  await recordRateLimit(RATE_LIMITS.OTP_REQUEST.scope, ip);
+
   const user = await prisma.user.findFirst({
     where: { OR: [{ cip: id }, { nin: id }] },
   });
@@ -32,11 +54,22 @@ export async function POST(req: NextRequest) {
       ok: true,
       sent: false,
       phoneMask: "+229 ** ** ** **",
-      // En démo : on ne révèle rien si identifiant inconnu
     });
   }
 
-  // L'admin peut toujours utiliser le mot de passe (compte d'urgence)
+  // Account lock check
+  const lockState = await isAccountLocked(user.id);
+  if (lockState.locked) {
+    return NextResponse.json(
+      {
+        error: "Compte temporairement verrouillé après plusieurs échecs.",
+        unlockAt: lockState.until?.toISOString(),
+      },
+      { status: 423 },
+    );
+  }
+
+  // Admin → mot de passe
   if (user.role === "ADMIN") {
     return NextResponse.json({
       ok: true,
@@ -47,8 +80,9 @@ export async function POST(req: NextRequest) {
   }
 
   const code = generateOtp();
+  const codeHash = await hash(code, 10);
   const phoneMask = maskPhone(user.phone);
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
   // Invalide les anciens OTP non consommés
   await prisma.otpCode.updateMany({
@@ -59,7 +93,7 @@ export async function POST(req: NextRequest) {
   await prisma.otpCode.create({
     data: {
       userId: user.id,
-      code,
+      codeHash,
       phoneMask,
       expiresAt,
     },
@@ -72,11 +106,12 @@ export async function POST(req: NextRequest) {
     resourceType: "User",
     resourceId: user.id,
     metadata: { channel: "SMS", phoneMask },
+    ip,
   });
 
-  // En production réelle : on enverra le SMS via la passerelle ASIN/MTN/Moov.
+  // En production réelle : SMS via passerelle ASIN/MTN/Moov.
   // En démo : on retourne le code dans la réponse pour faciliter le test.
-  // Pour désactiver en prod réelle : définir HIDE_DEMO_OTP=1 dans les env vars.
+  // Pour cacher en prod réelle : HIDE_DEMO_OTP=1
   const hideDemo = process.env.HIDE_DEMO_OTP === "1";
 
   return NextResponse.json({

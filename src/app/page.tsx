@@ -106,6 +106,9 @@ export default function LandingPage() {
               </Button>
             </Link>
           </div>
+          <p className="text-xs text-gray-400 mt-6">
+            Application mobile officielle (iOS / Android) en cours de déploiement — bientôt sur les stores.
+          </p>
         </div>
       </section>
 

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { ATTRIBUTE_LABELS } from "@/lib/attributes";
+
+function hashApiKey(k: string): string {
+  return createHash("sha256").update(k).digest("hex");
+}
 
 // Le tiers (banque) poll cet endpoint pour récupérer le résultat
 // dès que le citoyen a autorisé / refusé.
@@ -13,7 +18,9 @@ export async function GET(
     return NextResponse.json({ error: "X-API-Key requis" }, { status: 401 });
   }
 
-  const verifier = await prisma.verifierApp.findUnique({ where: { apiKey } });
+  const verifier = await prisma.verifierApp.findUnique({
+    where: { apiKeyHash: hashApiKey(apiKey) },
+  });
   if (!verifier) {
     return NextResponse.json({ error: "Clé API invalide" }, { status: 403 });
   }

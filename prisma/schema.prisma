@@ -27,17 +27,36 @@ model User {
 }
 
 model OtpCode {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  code       String   // 6 chiffres
-  channel    String   @default("SMS") // SMS | VOICE
-  phoneMask  String   // numéro masqué pour affichage
-  consumed   Boolean  @default(false)
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash    String   // bcrypt(code)
+  channel     String   @default("SMS") // SMS | VOICE
+  phoneMask   String   // numéro masqué pour affichage
+  consumed    Boolean  @default(false)
+  attempts    Int      @default(0)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
 
   @@index([userId, consumed])
+}
+
+model RateLimitEvent {
+  id         String   @id @default(cuid())
+  scope      String   // "OTP_REQUEST", "OTP_VERIFY", "VERIFY_API"
+  identifier String   // ex: cip, ip, apiKey
+  createdAt  DateTime @default(now())
+
+  @@index([scope, identifier, createdAt])
+}
+
+model AccountLock {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  reason      String
+  failCount   Int      @default(0)
+  lockedUntil DateTime?
+  updatedAt   DateTime @updatedAt
 }
 
 model CitizenRegistry {
@@ -165,7 +184,8 @@ model AuditLog {
 
 model VerifierApp {
   id            String                @id @default(cuid())
-  apiKey        String                @unique
+  apiKeyHash    String                @unique  // sha256(apiKey)
+  apiKeyPrefix  String                // 8 premiers chars pour debug
   name          String                // ex: "BNP Paribas Bénin"
   category      String                // BANK, EMPLOYER, EMBASSY, TELECOM, OTHER
   contactEmail  String?
@@ -198,14 +218,16 @@ model VerificationRequest {
 }
 
 model SigningKey {
-  id            String    @id @default(cuid())
-  keyId         String    @unique
-  algorithm     String    @default("RSA-2048")
-  publicKey     String
-  privateKeyEnc String
-  authority     String
-  authorityCode String    @unique
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  rotatedAt     DateTime?
+  id              String    @id @default(cuid())
+  keyId           String    @unique
+  algorithm       String    @default("RSA-2048")
+  publicKey       String
+  privateKeyEnc   String    // chiffré AES-256-GCM avec KEK dérivée de AUTH_SECRET
+  privateKeyIv    String?   // IV du chiffrement
+  privateKeyTag   String?   // tag GCM
+  authority       String
+  authorityCode   String    @unique
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  rotatedAt       DateTime?
 }

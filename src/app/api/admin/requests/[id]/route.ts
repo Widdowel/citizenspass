@@ -1,11 +1,13 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { runPipeline } from "@/lib/document-pipeline";
 import { logAudit, AuditAction } from "@/lib/audit";
 
 export const maxDuration = 60;
 
+// L'admin de CitizenPass NE PEUT PAS débloquer les exceptions qui relèvent
+// d'autorités tierces (DGI, greffe). Cette route est réduite à : ajouter une
+// note d'audit pour traçabilité.
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -18,11 +20,11 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const { status, note } = await req.json();
+  const { note } = await req.json();
 
   await prisma.request.update({
     where: { id },
-    data: { status, note: note || null },
+    data: { note: note || null },
   });
 
   await logAudit({
@@ -31,18 +33,10 @@ export async function PATCH(
     action: AuditAction.ADMIN_OVERRIDE,
     resourceType: "Request",
     resourceId: id,
-    metadata: { status, note },
+    metadata: { note, action: "annotate-only" },
     ip: req.headers.get("x-forwarded-for") ?? undefined,
     userAgent: req.headers.get("user-agent") ?? undefined,
   });
-
-  // Si l'admin approuve une exception, on relance le pipeline en mode forcé
-  if (status === "APPROVED") {
-    const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-    after(async () => {
-      await runPipeline(id, baseUrl);
-    });
-  }
 
   return NextResponse.json({ ok: true });
 }

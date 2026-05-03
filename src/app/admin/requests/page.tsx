@@ -106,31 +106,14 @@ export default function AdminRequestsPage() {
                     {req.exceptionReason}
                   </div>
                 )}
-                <Textarea
-                  placeholder="Note d'arbitrage (visible dans le journal d'audit)…"
-                  className="mb-3"
-                  value={notes[req.id] || ""}
-                  onChange={(e) =>
-                    setNotes((prev) => ({ ...prev, [req.id]: e.target.value }))
-                  }
-                />
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleAction(req.id, "APPROVED")}
-                    disabled={loading[req.id]}
-                    className="bg-[#008751] hover:bg-[#006b41]"
-                  >
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Approuver manuellement
-                  </Button>
-                  <Button
-                    onClick={() => handleAction(req.id, "REJECTED")}
-                    disabled={loading[req.id]}
-                    variant="destructive"
-                  >
-                    <XCircle className="w-4 h-4 mr-1" />
-                    Rejeter
-                  </Button>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
+                  <strong>Aucune action possible depuis CitizenPass.</strong>
+                  <p className="mt-1">
+                    Cette exception relève d&apos;une autorité tierce. Le citoyen doit régulariser sa situation
+                    auprès de l&apos;autorité compétente (DGI pour le fiscal, greffe de la Cour d&apos;Appel pour
+                    le judiciaire). La demande sera automatiquement re-traitée à la prochaine tentative
+                    après régularisation.
+                  </p>
                 </div>
               </CardContent>
             </Card>

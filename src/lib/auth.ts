@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
 import { logAudit } from "./audit";
+import { isAccountLocked, recordOtpFailure, clearAccountLock } from "./security";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -23,22 +24,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Voie OTP (citoyens)
         if (credentials.otp) {
+          // Lock check
+          const lock = await isAccountLocked(user.id);
+          if (lock.locked) return null;
+
           const code = (credentials.otp as string).trim();
           const otp = await prisma.otpCode.findFirst({
             where: {
               userId: user.id,
-              code,
               consumed: false,
               expiresAt: { gt: new Date() },
             },
             orderBy: { createdAt: "desc" },
           });
-          if (!otp) return null;
+          if (!otp) {
+            await recordOtpFailure(user.id);
+            return null;
+          }
+
+          // Vérification bcrypt du code (DB stocke le hash, jamais le code en clair)
+          const codeOk = await compare(code, otp.codeHash);
+          if (!codeOk) {
+            // Incrémente attempts + lock après 5 échecs
+            await prisma.otpCode.update({
+              where: { id: otp.id },
+              data: { attempts: { increment: 1 } },
+            });
+            await recordOtpFailure(user.id);
+            return null;
+          }
 
           await prisma.otpCode.update({
             where: { id: otp.id },
             data: { consumed: true },
           });
+          await clearAccountLock(user.id);
 
           await logAudit({
             actorId: user.id,

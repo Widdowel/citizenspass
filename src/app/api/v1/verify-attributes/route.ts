@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ATTRIBUTE_LABELS, type AttributeKey } from "@/lib/attributes";
 import { logAudit } from "@/lib/audit";
-import { randomBytes } from "crypto";
+import { randomBytes, createHash } from "crypto";
+import { checkRateLimit, recordRateLimit, clientIp, RATE_LIMITS } from "@/lib/security";
+
+function hashApiKey(k: string): string {
+  return createHash("sha256").update(k).digest("hex");
+}
 
 // API publique B2B — un tiers (banque, employeur, ambassade) demande à
 // vérifier des attributs d'un citoyen sans recevoir le document complet.
@@ -21,9 +26,15 @@ const DEMO_VERIFIERS: Array<{ apiKey: string; name: string; category: string }> 
 
 async function ensureDemoVerifiers() {
   for (const v of DEMO_VERIFIERS) {
+    const apiKeyHash = hashApiKey(v.apiKey);
     await prisma.verifierApp.upsert({
-      where: { apiKey: v.apiKey },
-      create: v,
+      where: { apiKeyHash },
+      create: {
+        apiKeyHash,
+        apiKeyPrefix: v.apiKey.slice(0, 8),
+        name: v.name,
+        category: v.category,
+      },
       update: {},
     });
   }
@@ -40,10 +51,27 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Rate limit par clé API
+  const ip = clientIp(req);
+  const rl = await checkRateLimit(RATE_LIMITS.VERIFY_API, apiKey);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit dépassé", retryAfter: rl.resetAt.toISOString() },
+      { status: 429 },
+    );
+  }
+  await recordRateLimit(RATE_LIMITS.VERIFY_API.scope, apiKey);
+
   const verifier = await prisma.verifierApp.findUnique({
-    where: { apiKey },
+    where: { apiKeyHash: hashApiKey(apiKey) },
   });
   if (!verifier || !verifier.isActive) {
+    await logAudit({
+      actorType: "EXTERNAL_VERIFIER",
+      action: "VERIFICATION_AUTH_FAILED",
+      metadata: { apiKeyPrefix: apiKey.slice(0, 8) },
+      ip,
+    });
     return NextResponse.json({ error: "Clé API invalide" }, { status: 403 });
   }
 

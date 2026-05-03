@@ -8,6 +8,7 @@ import {
 } from "crypto";
 import { prisma } from "./prisma";
 import { AUTHORITIES, type AuthorityCode } from "./constants";
+import { encryptSecret, decryptSecret } from "./crypto-kek";
 
 export type SignatureBundle = {
   signature: string;
@@ -29,12 +30,57 @@ function computeHash(payload: string): string {
   return createHash("sha256").update(payload).digest("hex");
 }
 
-async function getOrCreateKey(authorityCode: AuthorityCode) {
+type DecryptedKey = {
+  keyId: string;
+  publicKey: string;
+  privateKey: string;
+  authority: string;
+  authorityCode: string;
+};
+
+async function getOrCreateKey(authorityCode: AuthorityCode): Promise<DecryptedKey> {
   const existing = await prisma.signingKey.findUnique({
     where: { authorityCode },
   });
-  if (existing) return existing;
 
+  if (existing) {
+    // Si la clé est déjà chiffrée avec KEK (iv et tag présents), on déchiffre.
+    // Sinon, c'est l'ancien format (clair) — on retourne tel quel et on
+    // re-chiffre en arrière-plan.
+    if (existing.privateKeyIv && existing.privateKeyTag) {
+      const privateKey = decryptSecret({
+        cipherText: existing.privateKeyEnc,
+        iv: existing.privateKeyIv,
+        tag: existing.privateKeyTag,
+      });
+      return {
+        keyId: existing.keyId,
+        publicKey: existing.publicKey,
+        privateKey,
+        authority: existing.authority,
+        authorityCode: existing.authorityCode,
+      };
+    }
+    // Migration en place : la clé existait en clair, on la chiffre maintenant
+    const enc = encryptSecret(existing.privateKeyEnc);
+    await prisma.signingKey.update({
+      where: { id: existing.id },
+      data: {
+        privateKeyEnc: enc.cipherText,
+        privateKeyIv: enc.iv,
+        privateKeyTag: enc.tag,
+      },
+    });
+    return {
+      keyId: existing.keyId,
+      publicKey: existing.publicKey,
+      privateKey: existing.privateKeyEnc, // déjà en clair en mémoire
+      authority: existing.authority,
+      authorityCode: existing.authorityCode,
+    };
+  }
+
+  // Création d'une nouvelle clé : on chiffre avant de stocker
   const { publicKey, privateKey } = generateKeyPairSync("rsa", {
     modulusLength: 2048,
     publicKeyEncoding: { type: "spki", format: "pem" },
@@ -43,17 +89,28 @@ async function getOrCreateKey(authorityCode: AuthorityCode) {
 
   const auth = AUTHORITIES[authorityCode];
   const keyId = fingerprint(publicKey);
+  const enc = encryptSecret(privateKey);
 
-  return prisma.signingKey.create({
+  await prisma.signingKey.create({
     data: {
       keyId,
       algorithm: "RSA-2048",
       publicKey,
-      privateKeyEnc: privateKey,
+      privateKeyEnc: enc.cipherText,
+      privateKeyIv: enc.iv,
+      privateKeyTag: enc.tag,
       authority: auth.name,
       authorityCode,
     },
   });
+
+  return {
+    keyId,
+    publicKey,
+    privateKey,
+    authority: auth.name,
+    authorityCode,
+  };
 }
 
 export async function ensureKeysForAllAuthorities() {
@@ -72,7 +129,7 @@ export async function signPayload(
   const signer = createSign("RSA-SHA256");
   signer.update(payload);
   signer.end();
-  const signature = signer.sign(key.privateKeyEnc, "base64");
+  const signature = signer.sign(key.privateKey, "base64");
 
   return {
     signature,
