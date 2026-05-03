@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAudit, AuditAction } from "@/lib/audit";
-import { ensureKeysForAllAuthorities } from "@/lib/signature";
 import { totalPrice } from "@/lib/constants";
 
 export async function POST(req: NextRequest) {
@@ -17,8 +16,6 @@ export async function POST(req: NextRequest) {
   if (!type) {
     return NextResponse.json({ error: "Type de document requis" }, { status: 400 });
   }
-
-  await ensureKeysForAllAuthorities();
 
   // La demande est créée en attente de paiement.
   // Le pipeline ne démarre qu'après confirmation du paiement.
