@@ -20,6 +20,7 @@ type CitizenSeed = {
   nin: string | null;
   password: string;
   role: "ADMIN" | "CITIZEN";
+  phone?: string;
   registry?: {
     firstName: string;
     lastName: string;
@@ -57,6 +58,7 @@ const SEED: CitizenSeed[] = [
     nin: "BEN-2024-00000001",
     password: "demo123",
     role: "CITIZEN",
+    phone: "+229 97 12 34 56",
     registry: {
       firstName: "Koffi",
       middleName: "Emmanuel",
@@ -84,6 +86,7 @@ const SEED: CitizenSeed[] = [
     nin: "BEN-2024-00000002",
     password: "demo123",
     role: "CITIZEN",
+    phone: "+229 96 78 90 12",
     registry: {
       firstName: "Adjoa",
       middleName: "Reine",
@@ -108,6 +111,7 @@ const SEED: CitizenSeed[] = [
     nin: "BEN-2024-00000003",
     password: "demo123",
     role: "CITIZEN",
+    phone: "+229 95 41 22 33",
     registry: {
       firstName: "Yves",
       lastName: "Houngbédji",
@@ -133,6 +137,7 @@ const SEED: CitizenSeed[] = [
     nin: "BEN-2024-00000004",
     password: "demo123",
     role: "CITIZEN",
+    phone: "+229 91 55 67 89",
     registry: {
       firstName: "Fatouma",
       lastName: "Bio Sani",
@@ -158,6 +163,7 @@ const SEED: CitizenSeed[] = [
     nin: "BEN-2024-00000005",
     password: "demo123",
     role: "CITIZEN",
+    phone: "+229 94 18 27 45",
     registry: {
       firstName: "Anatole",
       lastName: "Agbessi",
@@ -230,7 +236,7 @@ async function main() {
           c.cip === "ADMIN-001"
             ? "admin@citizenpass.bj"
             : `${c.registry!.firstName.toLowerCase()}@example.bj`,
-        phone: c.role === "ADMIN" ? "+229 97 00 00 01" : undefined,
+        phone: c.phone ?? (c.role === "ADMIN" ? "+229 97 00 00 01" : undefined),
         password: hashSync(c.password, 10),
         role: c.role,
         registryId,
