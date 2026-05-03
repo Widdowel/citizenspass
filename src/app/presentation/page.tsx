@@ -110,29 +110,28 @@ export default function PresentationPage() {
           <div className="space-y-4">
             <p className="text-lg text-gray-700">
               Le Bénin est l&apos;un des pays africains les plus avancés en gouvernance électronique. Le portail{" "}
-              <strong>service-public.bj</strong> (ASIN) recense <strong>1 200+ services</strong> — des
-              actes d&apos;état civil aux agréments sectoriels (pharmacie, télécoms, drones, marchés publics).
-              Plusieurs sont déjà délivrés <strong>100% en ligne</strong> avec PDF officiel
-              (attestation fiscale, attestation BAC…).
+              <strong>service-public.bj</strong> (ASIN) recense <strong>1 200+ démarches</strong>, dont
+              environ <strong>30 sont déjà délivrées 100% en ligne</strong> avec PDF officiel : casier
+              judiciaire B3, certificat de nationalité, attestation fiscale, RCCM, e-Visa, e-Résultats,
+              services foncier ANDF, etc.
             </p>
             <p className="text-lg text-gray-700">
-              <strong>Mais le citoyen vit une expérience fragmentée.</strong> Il doit jongler entre
-              une dizaine de portails sectoriels (DGI/eservices, anip.bj, anatt.bj, abrp.bj, marchés
-              publics…), créer plusieurs comptes, mémoriser plusieurs identifiants, et pour la majorité
-              des démarches courantes (acte de naissance, casier, certificat de résidence) le retrait
-              du document tamponné reste manuel.
+              L&apos;ASIN dispose aussi d&apos;une <strong>PKI nationale</strong> avec certificats
+              d&apos;identité numérique (Local ID / Virtual ID / <strong>Mobile ID</strong>) et de la
+              signature électronique légalement reconnue (Loi 2017-20). Les briques techniques existent.
             </p>
             <p className="text-lg text-gray-700 mt-4">
-              L&apos;ASIN dispose déjà de l&apos;infrastructure de souveraineté numérique : <strong>PKI nationale</strong>{" "}
-              (certificats d&apos;identité numérique Local / Virtual / Mobile ID), <strong>signature électronique
-              légalement reconnue</strong> (Loi 2017-20), e-visa, casier judiciaire B3 en ligne, attestation fiscale
-              en ligne, etc. Les briques techniques existent.
+              <strong>Le maillon manquant côté citoyen :</strong> une expérience mobile unifiée. Aujourd&apos;hui,
+              il jongle entre une dizaine de portails sectoriels (DGI/eservices, anip.bj, anatt.bj,
+              andf.bj, abrp.bj…), crée plusieurs comptes, et pour la majorité des actes d&apos;état civil
+              (acte de naissance, mariage, résidence, célibat…) le retrait du document tamponné reste
+              manuel au guichet de la mairie.
             </p>
             <p className="text-lg text-gray-700 mt-4">
-              <strong className="text-[#008751]">BJ PASS s&apos;appuie sur ces briques et les unifie en une seule expérience citoyenne.</strong>{" "}
-              Une seule app mobile, un seul wallet, une seule authentification, un catalogue personnalisé
-              de toutes les démarches éligibles, le pipeline automatique de bout en bout pour les documents
-              les plus demandés. Pas un nouveau silo de plus — la <strong>face citoyen unifiée</strong>{" "}
+              <strong className="text-[#008751]">BJ PASS s&apos;appuie sur le PKI ASIN existant et unifie l&apos;expérience.</strong>{" "}
+              Une seule app mobile, un seul wallet, un catalogue personnalisé. Pour les ~30 documents
+              déjà en ligne : agrégation et UX cohérente. Pour les ~25 actes encore manuels : délivrance
+              instantanée signée crypto. Pas un nouveau silo — la <strong>face citoyen unifiée</strong>{" "}
               de l&apos;écosystème ASIN.
             </p>
           </div>
