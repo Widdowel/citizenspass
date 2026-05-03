@@ -27,28 +27,26 @@ async function main() {
     const sql = await fs.readFile(file, "utf-8");
     console.log(`\n  ▶ ${dir}`);
 
-    // Découpe sur les ; en début/fin de ligne pour exécuter chaque statement
-    const statements = sql
-      .split(/;\s*\n/)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0 && !s.startsWith("--"));
-
-    for (const stmt of statements) {
-      try {
-        await client.execute(stmt);
-      } catch (e) {
-        const msg = (e as Error).message;
-        // Ignore les erreurs "already exists" si on relance
-        if (msg.includes("already exists")) {
-          console.log(`    ⚠ déjà appliqué`);
-          continue;
-        }
-        console.error(`    ✗ ${msg}`);
-        throw e;
+    try {
+      await client.executeMultiple(sql);
+      console.log(`    ✓ appliquée`);
+    } catch (e) {
+      const msg = (e as Error).message;
+      if (msg.includes("already exists")) {
+        console.log(`    ⚠ déjà appliquée (skip)`);
+        continue;
       }
+      console.error(`    ✗ ${msg}`);
+      throw e;
     }
-    console.log(`    ✓ appliquée`);
   }
+
+  // Vérification : compter les tables après push
+  const check = await client.execute(
+    "SELECT count(*) as n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+  );
+  const tableCount = (check.rows[0] as unknown as { n: number }).n;
+  console.log(`\n→ Tables présentes sur Turso après migration : ${tableCount}`);
 
   console.log(`\n✓ Toutes les migrations ont été appliquées sur Turso.`);
   await client.close();
