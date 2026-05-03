@@ -13,6 +13,7 @@
     "make:vercel-env": "tsx prisma/make-vercel-env.ts",
     "check:turso": "tsx prisma/check-turso.ts",
     "db:push-turso": "tsx prisma/push-turso.ts",
+    "db:reset-turso": "tsx prisma/reset-turso.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "prisma migrate deploy && tsx prisma/seed.ts",
     "db:setup-turso": "tsx prisma/push-turso.ts && tsx prisma/seed.ts"
