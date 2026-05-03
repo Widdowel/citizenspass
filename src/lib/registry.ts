@@ -85,7 +85,19 @@ export function checkEligibility(
 
     // ===== IDENTITÉ =====
     case "CIP_ATTESTATION":
+    case "CIP_RENEWAL":
+    case "FID_CARD":
     case "CEDEAO_PASSPORT_ATTESTATION":
+      return { eligible: true };
+
+    case "PASSPORT_ORDINARY":
+      // Le passeport ordinaire requiert que le citoyen soit Béninois
+      if (citizen.nationality !== "Béninoise") {
+        return {
+          eligible: false,
+          exceptionReason: "Passeport ordinaire réservé aux ressortissants béninois.",
+        };
+      }
       return { eligible: true };
 
     case "NATIONALITY_CERTIFICATE":
@@ -156,6 +168,34 @@ export function checkEligibility(
           exceptionReason: "Patente non à jour. Régularisation requise.",
         };
       }
+      return { eligible: true };
+
+    // ===== COMMERCE (RCCM) =====
+    case "RCCM_REGISTRATION":
+    case "RCCM_EXTRACT":
+      return { eligible: true };
+
+    // ===== TRANSPORTS =====
+    case "DRIVER_LICENSE_NEW":
+    case "DRIVER_LICENSE_INTERNATIONAL":
+      // Le permis nécessite d'être majeur (date de naissance > 18 ans)
+      if (citizen.birthDate) {
+        const ageYears = (Date.now() - citizen.birthDate.getTime()) / (365.25 * 24 * 3600 * 1000);
+        if (ageYears < 18) {
+          return {
+            eligible: false,
+            exceptionReason: "Le citoyen doit être majeur pour le permis de conduire.",
+          };
+        }
+      }
+      return { eligible: true };
+
+    // ===== ÉDUCATION =====
+    case "BEPC_CERTIFICATE":
+    case "BAC_DIPLOMA":
+    case "BAC_RECORD_EXTRACT":
+    case "BAC_AUTHENTICITY":
+      // En production : vérification auprès de la base MESTP. En démo : on délivre.
       return { eligible: true };
 
     // ===== MUNICIPAL =====

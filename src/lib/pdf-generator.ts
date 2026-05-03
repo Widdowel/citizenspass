@@ -344,6 +344,67 @@ function drawBody(ctx: DrawCtx, type: string, data: ExtractedData): number {
     ]);
   }
 
+  if (type === "PASSPORT_ORDINARY") {
+    y = drawSectionTitle(ctx, y, "PASSEPORT ORDINAIRE BIOMÉTRIQUE");
+    y = drawFields(ctx, y, [
+      { label: "Type de document", value: "Passeport ordinaire" },
+      { label: "Nationalité", value: data.nationality },
+      { label: "Validité", value: "5 ans à compter de l'émission" },
+    ]);
+  }
+
+  if (type === "CIP_RENEWAL") {
+    y = drawSectionTitle(ctx, y, "ATTESTATION DE RENOUVELLEMENT CIP");
+    const { page, font } = ctx;
+    page.drawText(
+      `Le présent acte atteste de la prise en compte de la demande de renouvellement de la Carte d'Identité Personnelle ${data.cip}. La nouvelle carte sera produite par l'ANIP et notifiée par SMS.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
+  if (type === "FID_CARD") {
+    y = drawSectionTitle(ctx, y, "CARTE FID — FICHIER D'IDENTIFICATION DIGITALE");
+    y = drawFields(ctx, y, [
+      { label: "Identifiant FID", value: data.cip.replace("-", "F") },
+      { label: "Statut", value: "Actif et opérationnel" },
+    ]);
+  }
+
+  if (type === "RCCM_REGISTRATION" || type === "RCCM_EXTRACT") {
+    y = drawSectionTitle(ctx, y, type === "RCCM_REGISTRATION" ? "IMMATRICULATION RCCM" : "EXTRAIT RCCM");
+    const { page, font } = ctx;
+    page.drawText(
+      `Document délivré au registre du commerce et du crédit mobilier au nom de ${data.fullName}.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 35;
+  }
+
+  if (type === "DRIVER_LICENSE_NEW" || type === "DRIVER_LICENSE_INTERNATIONAL") {
+    y = drawSectionTitle(ctx, y, type === "DRIVER_LICENSE_NEW" ? "PERMIS DE CONDUIRE BIOMÉTRIQUE" : "PERMIS DE CONDUIRE INTERNATIONAL");
+    y = drawFields(ctx, y, [
+      { label: "Catégorie", value: "B (véhicule de tourisme)" },
+      { label: "Validité", value: type === "DRIVER_LICENSE_INTERNATIONAL" ? "1 an, valable pour les pays signataires Vienne 1968" : "5 ans à compter de l'émission" },
+    ]);
+  }
+
+  if (type === "BEPC_CERTIFICATE" || type === "BAC_DIPLOMA" || type === "BAC_RECORD_EXTRACT" || type === "BAC_AUTHENTICITY") {
+    const titles: Record<string, string> = {
+      BEPC_CERTIFICATE: "CERTIFICAT — BREVET D'ÉTUDES DU PREMIER CYCLE",
+      BAC_DIPLOMA: "DIPLÔME DU BACCALAURÉAT",
+      BAC_RECORD_EXTRACT: "EXTRAIT DU RELEVÉ DE NOTES DU BACCALAURÉAT",
+      BAC_AUTHENTICITY: "CERTIFICAT D'AUTHENTICITÉ — BACCALAURÉAT",
+    };
+    y = drawSectionTitle(ctx, y, titles[type]);
+    const { page, font } = ctx;
+    page.drawText(
+      `Document délivré par la Direction des Examens et Concours du Ministère des Enseignements Secondaire, Technique et Professionnel.`,
+      { x: 60, y, size: 10, font, color: INK, maxWidth: 475, lineHeight: 14 },
+    );
+    y -= 50;
+  }
+
   return y;
 }
 

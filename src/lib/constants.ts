@@ -1,15 +1,18 @@
 export const DOC_TYPES: Record<string, string> = {
   // État civil
-  BIRTH_CERTIFICATE: "Acte de naissance",
+  BIRTH_CERTIFICATE: "Acte de naissance sécurisé",
   MARRIAGE_CERTIFICATE: "Acte de mariage",
   DEATH_CERTIFICATE: "Acte de décès",
   INDIVIDUALITY_CERTIFICATE: "Certificat d'individualité",
-  CELIBACY_CERTIFICATE: "Certificat de célibat",
+  CELIBACY_CERTIFICATE: "Certificat de célibat et coutumes",
   COLLECTIVE_LIFE_CERTIFICATE: "Certificat de vie collective",
   // Identité & nationalité
   CIP_ATTESTATION: "Attestation CIP (ANIP)",
+  CIP_RENEWAL: "Renouvellement de la carte CIP",
+  FID_CARD: "Carte FID (Fichier d'Identification Digitale)",
   NATIONALITY_CERTIFICATE: "Certificat de nationalité",
   CEDEAO_PASSPORT_ATTESTATION: "Attestation de passeport CEDEAO",
+  PASSPORT_ORDINARY: "Passeport ordinaire biométrique",
   // Judiciaire
   CRIMINAL_RECORD: "Casier judiciaire (Bulletin n°3)",
   NON_CONVICTION_CERTIFICATE: "Certificat de non-condamnation",
@@ -21,8 +24,18 @@ export const DOC_TYPES: Record<string, string> = {
   // Municipal
   RESIDENCE_CERTIFICATE: "Certificat de résidence",
   DOMICILE_CERTIFICATE: "Certificat de domicile",
-  // Professionnel
+  // Professionnel & Commerce
   PATENTE_CERTIFICATE: "Quitus patente",
+  RCCM_REGISTRATION: "Immatriculation au registre du commerce",
+  RCCM_EXTRACT: "Extrait du registre du commerce (RCCM)",
+  // Transports
+  DRIVER_LICENSE_NEW: "Permis de conduire biométrique",
+  DRIVER_LICENSE_INTERNATIONAL: "Permis de conduire international",
+  // Éducation
+  BEPC_CERTIFICATE: "Certificat du BEPC",
+  BAC_DIPLOMA: "Diplôme du baccalauréat",
+  BAC_RECORD_EXTRACT: "Extrait du relevé du baccalauréat",
+  BAC_AUTHENTICITY: "Authenticité du diplôme du baccalauréat",
 };
 
 export const DOC_CATEGORIES: Record<string, { label: string; types: string[] }> = {
@@ -39,7 +52,14 @@ export const DOC_CATEGORIES: Record<string, { label: string; types: string[] }> 
   },
   IDENTITY: {
     label: "Identité et nationalité",
-    types: ["CIP_ATTESTATION", "NATIONALITY_CERTIFICATE", "CEDEAO_PASSPORT_ATTESTATION"],
+    types: [
+      "CIP_ATTESTATION",
+      "CIP_RENEWAL",
+      "FID_CARD",
+      "NATIONALITY_CERTIFICATE",
+      "CEDEAO_PASSPORT_ATTESTATION",
+      "PASSPORT_ORDINARY",
+    ],
   },
   JUDICIAL: {
     label: "Judiciaire",
@@ -53,9 +73,17 @@ export const DOC_CATEGORIES: Record<string, { label: string; types: string[] }> 
     label: "Municipal",
     types: ["RESIDENCE_CERTIFICATE", "DOMICILE_CERTIFICATE"],
   },
-  PROFESSIONAL: {
-    label: "Professionnel",
-    types: ["PATENTE_CERTIFICATE"],
+  COMMERCE: {
+    label: "Commerce et professionnel",
+    types: ["PATENTE_CERTIFICATE", "RCCM_REGISTRATION", "RCCM_EXTRACT"],
+  },
+  TRANSPORT: {
+    label: "Transports",
+    types: ["DRIVER_LICENSE_NEW", "DRIVER_LICENSE_INTERNATIONAL"],
+  },
+  EDUCATION: {
+    label: "Éducation",
+    types: ["BEPC_CERTIFICATE", "BAC_DIPLOMA", "BAC_RECORD_EXTRACT", "BAC_AUTHENTICITY"],
   },
 };
 
@@ -80,7 +108,15 @@ export const PIPELINE_STEPS = [
   { key: "READY", label: "Document délivré", description: "Document scellé, vérifiable publiquement, prêt au téléchargement" },
 ] as const;
 
-export type AuthorityCode = "COUR_APPEL_COTONOU" | "MAIRIE_COTONOU" | "DGI" | "ANIP" | "DTT";
+export type AuthorityCode =
+  | "COUR_APPEL_COTONOU"
+  | "MAIRIE_COTONOU"
+  | "DGI"
+  | "ANIP"
+  | "DTT"
+  | "DEPLA"
+  | "RCCM"
+  | "MIN_EDUCATION";
 
 export const AUTHORITIES: Record<AuthorityCode, { name: string; shortName: string; subtitle: string }> = {
   COUR_APPEL_COTONOU: {
@@ -108,6 +144,21 @@ export const AUTHORITIES: Record<AuthorityCode, { name: string; shortName: strin
     shortName: "DTT",
     subtitle: "Ministère des Infrastructures et Transports",
   },
+  DEPLA: {
+    name: "Direction de l'Émigration, Police de l'Air et des Frontières",
+    shortName: "DEPLA",
+    subtitle: "Ministère de l'Intérieur et de la Sécurité Publique",
+  },
+  RCCM: {
+    name: "Registre du Commerce et du Crédit Mobilier",
+    shortName: "RCCM",
+    subtitle: "Greffe du Tribunal de Commerce",
+  },
+  MIN_EDUCATION: {
+    name: "Ministère des Enseignements Secondaire, Technique et Professionnel",
+    shortName: "MESTP",
+    subtitle: "Direction des Examens et Concours",
+  },
 };
 
 export const DOC_AUTHORITY: Record<string, AuthorityCode> = {
@@ -127,12 +178,27 @@ export const DOC_AUTHORITY: Record<string, AuthorityCode> = {
   NON_BANKRUPTCY_CERTIFICATE: "COUR_APPEL_COTONOU",
   // ANIP
   CIP_ATTESTATION: "ANIP",
+  CIP_RENEWAL: "ANIP",
+  FID_CARD: "ANIP",
   CEDEAO_PASSPORT_ATTESTATION: "ANIP",
+  // DEPLA (passeport)
+  PASSPORT_ORDINARY: "DEPLA",
   // DGI
   TAX_CERTIFICATE: "DGI",
   IFU_ATTESTATION: "DGI",
   VAT_PAYMENT_CERTIFICATE: "DGI",
   PATENTE_CERTIFICATE: "DGI",
+  // RCCM
+  RCCM_REGISTRATION: "RCCM",
+  RCCM_EXTRACT: "RCCM",
+  // DTT
+  DRIVER_LICENSE_NEW: "DTT",
+  DRIVER_LICENSE_INTERNATIONAL: "DTT",
+  // Ministère Éducation
+  BEPC_CERTIFICATE: "MIN_EDUCATION",
+  BAC_DIPLOMA: "MIN_EDUCATION",
+  BAC_RECORD_EXTRACT: "MIN_EDUCATION",
+  BAC_AUTHENTICITY: "MIN_EDUCATION",
 };
 
 export const DOC_VALIDITY_MONTHS: Record<string, number> = {
@@ -148,12 +214,23 @@ export const DOC_VALIDITY_MONTHS: Record<string, number> = {
   VAT_PAYMENT_CERTIFICATE: 6,
   PATENTE_CERTIFICATE: 12,
   CIP_ATTESTATION: 12,
+  CIP_RENEWAL: 0,
+  FID_CARD: 60, // 5 ans
   CEDEAO_PASSPORT_ATTESTATION: 12,
+  PASSPORT_ORDINARY: 60,
   INDIVIDUALITY_CERTIFICATE: 0,
   CELIBACY_CERTIFICATE: 6,
   COLLECTIVE_LIFE_CERTIFICATE: 6,
   NON_CONVICTION_CERTIFICATE: 3,
   NON_BANKRUPTCY_CERTIFICATE: 6,
+  RCCM_REGISTRATION: 0,
+  RCCM_EXTRACT: 6,
+  DRIVER_LICENSE_NEW: 60,
+  DRIVER_LICENSE_INTERNATIONAL: 12,
+  BEPC_CERTIFICATE: 0,
+  BAC_DIPLOMA: 0,
+  BAC_RECORD_EXTRACT: 12,
+  BAC_AUTHENTICITY: 12,
 };
 
 export const DOC_SERIAL_PREFIX: Record<string, string> = {
@@ -169,12 +246,23 @@ export const DOC_SERIAL_PREFIX: Record<string, string> = {
   VAT_PAYMENT_CERTIFICATE: "TVA",
   PATENTE_CERTIFICATE: "PAT",
   CIP_ATTESTATION: "CIP",
+  CIP_RENEWAL: "CIR",
+  FID_CARD: "FID",
   CEDEAO_PASSPORT_ATTESTATION: "CDE",
+  PASSPORT_ORDINARY: "PSP",
   INDIVIDUALITY_CERTIFICATE: "CIN",
   CELIBACY_CERTIFICATE: "CCL",
   COLLECTIVE_LIFE_CERTIFICATE: "CVC",
   NON_CONVICTION_CERTIFICATE: "CNC",
   NON_BANKRUPTCY_CERTIFICATE: "CNF",
+  RCCM_REGISTRATION: "RCM",
+  RCCM_EXTRACT: "RCE",
+  DRIVER_LICENSE_NEW: "PCB",
+  DRIVER_LICENSE_INTERNATIONAL: "PCI",
+  BEPC_CERTIFICATE: "BEP",
+  BAC_DIPLOMA: "BAC",
+  BAC_RECORD_EXTRACT: "BAR",
+  BAC_AUTHENTICITY: "BAA",
 };
 
 export const COUNTRY = {
@@ -192,8 +280,11 @@ export const DOC_PRICING: Record<string, { stamp: number; serviceFee: number }> 
   CELIBACY_CERTIFICATE: { stamp: 500, serviceFee: 50 },
   COLLECTIVE_LIFE_CERTIFICATE: { stamp: 500, serviceFee: 50 },
   CIP_ATTESTATION: { stamp: 200, serviceFee: 50 },
+  CIP_RENEWAL: { stamp: 1000, serviceFee: 100 },
+  FID_CARD: { stamp: 1000, serviceFee: 100 },
   NATIONALITY_CERTIFICATE: { stamp: 1000, serviceFee: 100 },
   CEDEAO_PASSPORT_ATTESTATION: { stamp: 500, serviceFee: 50 },
+  PASSPORT_ORDINARY: { stamp: 50000, serviceFee: 500 },
   CRIMINAL_RECORD: { stamp: 1000, serviceFee: 100 },
   NON_CONVICTION_CERTIFICATE: { stamp: 1000, serviceFee: 100 },
   NON_BANKRUPTCY_CERTIFICATE: { stamp: 1000, serviceFee: 100 },
@@ -203,6 +294,14 @@ export const DOC_PRICING: Record<string, { stamp: number; serviceFee: number }> 
   RESIDENCE_CERTIFICATE: { stamp: 200, serviceFee: 50 },
   DOMICILE_CERTIFICATE: { stamp: 200, serviceFee: 50 },
   PATENTE_CERTIFICATE: { stamp: 1000, serviceFee: 100 },
+  RCCM_REGISTRATION: { stamp: 10000, serviceFee: 500 },
+  RCCM_EXTRACT: { stamp: 1500, serviceFee: 100 },
+  DRIVER_LICENSE_NEW: { stamp: 17000, serviceFee: 300 },
+  DRIVER_LICENSE_INTERNATIONAL: { stamp: 5000, serviceFee: 200 },
+  BEPC_CERTIFICATE: { stamp: 500, serviceFee: 50 },
+  BAC_DIPLOMA: { stamp: 1000, serviceFee: 100 },
+  BAC_RECORD_EXTRACT: { stamp: 500, serviceFee: 50 },
+  BAC_AUTHENTICITY: { stamp: 500, serviceFee: 100 },
 };
 
 export function totalPrice(type: string): number {

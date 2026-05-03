@@ -111,13 +111,20 @@ export default function PresentationPage() {
             <p className="text-lg text-gray-700">
               Le Bénin a fait depuis 2017 d&apos;immenses progrès sur la <strong>digitalisation</strong> :
               ANIP a enrôlé biométriquement plus de <strong>9 millions de personnes</strong>, le portail
-              service-public.bj recense <strong>1 200+ démarches</strong>, la connectivité mobile dépasse
-              les <strong>90% de la population</strong>.
+              <strong> service-public.bj</strong> recense <strong>1 200+ démarches</strong> et capte déjà
+              <strong> près de 90% des demandes</strong>, la connectivité mobile dépasse les <strong>90% de la population</strong>.
             </p>
             <p className="text-lg text-gray-700">
-              Pourtant, pour obtenir un acte de naissance ou un casier judiciaire, le citoyen attend toujours
-              <strong> 2 jours à 1 mois</strong>, doit se déplacer plusieurs fois, et essuie des coûts cachés
-              estimés au double du timbre officiel.
+              <strong>Mais une fois la demande déposée en ligne, le traitement reste essentiellement manuel.</strong>{" "}
+              Le citoyen attend toujours <strong>2 jours à 1 mois</strong> pour son casier ou son acte
+              de naissance, doit revenir au guichet pour récupérer le document tamponné, et essuie des coûts
+              cachés estimés au double du timbre officiel.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              <strong className="text-[#008751]">BJ PASS ne remplace pas service-public.bj.</strong> Il vient
+              s&apos;y greffer comme la couche d&apos;<strong>orchestration et de délivrance instantanée</strong>{" "}
+              qui manque entre le portail et le citoyen — pour passer du « digital de la demande » au
+              « digital du document signé livré ».
             </p>
           </div>
           <div className="bg-[#FAF7E8] rounded-2xl p-6 space-y-4 border border-[#FCD116]/30">
@@ -166,14 +173,21 @@ export default function PresentationPage() {
       </Section>
 
       {/* SOLUTION */}
-      <Section id="solution" eyebrow="03 · Solution" title="BJ PASS — l'orchestration numérique remplace le transport humain">
+      <Section id="solution" eyebrow="03 · Solution" title="BJ PASS — la couche de délivrance instantanée au-dessus de service-public.bj">
         <div className="grid md:grid-cols-2 gap-10 items-start">
           <div>
             <p className="text-lg text-gray-700 mb-4">
-              <strong>L&apos;État dispose déjà des données.</strong> BJ PASS est l&apos;orchestrateur qui interroge automatiquement les bases natives (ANIP, Cour d&apos;Appel, DGI, mairies), génère le document signé cryptographiquement, et le délivre en quelques minutes — depuis l&apos;application mobile officielle sur le téléphone du citoyen.
+              <strong>L&apos;État dispose déjà des données et a déjà digitalisé la demande</strong> via{" "}
+              <strong>service-public.bj</strong> (1 200+ démarches en ligne, ~90% des dossiers transitant
+              par le portail). Le maillon manquant : <strong>la délivrance instantanée</strong> du
+              document signé.
             </p>
             <p className="text-lg text-gray-700">
-              Le citoyen ne quitte JAMAIS l&apos;application. Le paiement, la régularisation fiscale, l&apos;authentification, la vérification — tout se passe dans BJ PASS.
+              BJ PASS s&apos;intègre avec service-public.bj en lui ajoutant la couche
+              d&apos;<strong>orchestration automatique inter-administrations</strong> : interrogation
+              ANIP, Cour d&apos;Appel, DGI, mairies, RCCM, DTT, ministères en quelques secondes,
+              génération PDF officiel, signature numérique de l&apos;autorité émettrice. Le citoyen
+              ne quitte JAMAIS son téléphone.
             </p>
           </div>
           <div className="space-y-3">
@@ -182,6 +196,29 @@ export default function PresentationPage() {
             <Feature icon={ShieldCheck} title="Souveraineté totale" desc="Hébergement physique au Bénin. Aucune donnée ne quitte le territoire. Conformité Loi 2017-20." />
             <Feature icon={Users} title="Vérification publique" desc="Banques, ambassades, employeurs vérifient un document en 2 secondes via QR ou API B2B sécurisée." />
           </div>
+        </div>
+
+        <div className="mt-10 bg-[#FAF7E8] rounded-xl p-6 border border-[#FCD116]/40">
+          <h4 className="font-bold mb-3 flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-[#008751]" />
+            Positionnement clair vis-à-vis de l&apos;existant
+          </h4>
+          <div className="grid md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <div className="font-bold text-[#1E3A5F] mb-1">service-public.bj</div>
+              <div className="text-gray-600">Portail de DEMANDE en ligne. Information exhaustive, formulaires électroniques. Le citoyen dépose son dossier.</div>
+            </div>
+            <div className="flex items-center justify-center text-2xl text-[#008751]">+</div>
+            <div>
+              <div className="font-bold text-[#008751] mb-1">BJ PASS</div>
+              <div className="text-gray-600">Couche de DÉLIVRANCE automatique. Orchestration inter-admin, signature crypto, PDF livré en moins de 90 secondes dans le wallet citoyen.</div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-4">
+            BJ PASS ne se substitue pas à service-public.bj. Il complète le portail existant en
+            résolvant le seul problème qui demeure : la latence entre la demande digitale et la
+            délivrance physique du document tamponné.
+          </p>
         </div>
       </Section>
 
