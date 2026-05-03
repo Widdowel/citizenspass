@@ -74,17 +74,16 @@ export async function POST(req: NextRequest) {
     metadata: { channel: "SMS", phoneMask },
   });
 
-  // En production : on envoie le SMS via l'opérateur (passerelle ASIN ou MTN/Moov).
+  // En production réelle : on enverra le SMS via la passerelle ASIN/MTN/Moov.
   // En démo : on retourne le code dans la réponse pour faciliter le test.
-  // ⚠ À retirer en production réelle.
-  const isDemo = process.env.NODE_ENV !== "production" || process.env.DEMO_MODE === "1";
+  // Pour désactiver en prod réelle : définir HIDE_DEMO_OTP=1 dans les env vars.
+  const hideDemo = process.env.HIDE_DEMO_OTP === "1";
 
   return NextResponse.json({
     ok: true,
     sent: true,
     phoneMask,
     requiresPassword: false,
-    // Code visible en démo uniquement
-    demoCode: isDemo ? code : undefined,
+    demoCode: hideDemo ? undefined : code,
   });
 }
