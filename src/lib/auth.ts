@@ -2,38 +2,80 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "./prisma";
+import { logAudit } from "./audit";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
         identifier: { label: "CIP / NIN", type: "text" },
+        otp: { label: "Code OTP", type: "text" },
         password: { label: "Mot de passe", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.identifier || !credentials?.password) return null;
+        if (!credentials?.identifier) return null;
         const id = (credentials.identifier as string).trim();
 
         const user = await prisma.user.findFirst({
           where: { OR: [{ cip: id }, { nin: id }] },
         });
-
         if (!user) return null;
 
-        const isValid = await compare(
-          credentials.password as string,
-          user.password,
-        );
-        if (!isValid) return null;
+        // Voie OTP (citoyens)
+        if (credentials.otp) {
+          const code = (credentials.otp as string).trim();
+          const otp = await prisma.otpCode.findFirst({
+            where: {
+              userId: user.id,
+              code,
+              consumed: false,
+              expiresAt: { gt: new Date() },
+            },
+            orderBy: { createdAt: "desc" },
+          });
+          if (!otp) return null;
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          cip: user.cip,
-          nin: user.nin,
-        };
+          await prisma.otpCode.update({
+            where: { id: otp.id },
+            data: { consumed: true },
+          });
+
+          await logAudit({
+            actorId: user.id,
+            actorType: "SYSTEM",
+            action: "OTP_CONSUMED",
+            resourceType: "User",
+            resourceId: user.id,
+          });
+
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            cip: user.cip,
+            nin: user.nin,
+          };
+        }
+
+        // Voie mot de passe (admins / fallback démo)
+        if (credentials.password) {
+          const isValid = await compare(
+            credentials.password as string,
+            user.password,
+          );
+          if (!isValid) return null;
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            cip: user.cip,
+            nin: user.nin,
+          };
+        }
+
+        return null;
       },
     }),
   ],

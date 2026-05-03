@@ -24,10 +24,10 @@ type CitizenSeed = {
     firstName: string;
     lastName: string;
     middleName?: string;
-    birthDate: string;
-    birthPlace: string;
-    birthCommune: string;
-    birthDepartment: string;
+    birthDate?: string;
+    birthPlace?: string;
+    birthCommune?: string;
+    birthDepartment?: string;
     gender: "M" | "F";
     fatherName?: string;
     motherName?: string;
@@ -41,6 +41,7 @@ type CitizenSeed = {
     fiscalStatus?: "UP_TO_DATE" | "PENDING" | "OVERDUE";
     cedeaoCardNumber?: string;
     passportNumber?: string;
+    sourceType?: "DIGITAL_NATIVE" | "PAPER_DIGITIZED" | "AGENT_PENDING";
   };
 };
 
@@ -150,6 +151,26 @@ const SEED: CitizenSeed[] = [
       fiscalStatus: "OVERDUE",
     },
   },
+  {
+    // 5e citoyen — registre incomplet (acte d'origine pas encore numérisé)
+    // Démontre le workflow EXTRACTION_REQUIRED → agent admin numérise
+    cip: "5678-9012-3456",
+    nin: "BEN-2024-00000005",
+    password: "demo123",
+    role: "CITIZEN",
+    registry: {
+      firstName: "Anatole",
+      lastName: "Agbessi",
+      gender: "M",
+      maritalStatus: "MARRIED",
+      judicialStatus: "CLEAN",
+      fiscalStatus: "UP_TO_DATE",
+      sourceType: "AGENT_PENDING",
+      // Né en 1968 dans un village d'Adjarra — son acte n'a pas été
+      // saisi numériquement à l'enrôlement ANIP, seuls les champs de l'identité
+      // biométrique sont disponibles (nom, prénom, sexe).
+    },
+  },
 ];
 
 async function main() {
@@ -169,7 +190,7 @@ async function main() {
           firstName: c.registry.firstName,
           lastName: c.registry.lastName,
           middleName: c.registry.middleName,
-          birthDate: new Date(c.registry.birthDate),
+          birthDate: c.registry.birthDate ? new Date(c.registry.birthDate) : null,
           birthPlace: c.registry.birthPlace,
           birthCommune: c.registry.birthCommune,
           birthDepartment: c.registry.birthDepartment,
@@ -186,6 +207,7 @@ async function main() {
           fiscalStatus: c.registry.fiscalStatus ?? "UP_TO_DATE",
           cedeaoCardNumber: c.registry.cedeaoCardNumber,
           passportNumber: c.registry.passportNumber,
+          sourceType: c.registry.sourceType ?? "DIGITAL_NATIVE",
         },
       });
       registryId = reg.id;
@@ -222,6 +244,7 @@ async function main() {
   console.log("  Citoyen 2: 2345-6789-0123 / demo123 (Adjoa Mensah — fisc PENDING)");
   console.log("  Citoyen 3: 3456-7890-1234 / demo123 (Yves Houngbédji — JUDICIAL ONGOING → exception)");
   console.log("  Citoyen 4: 4567-8901-2345 / demo123 (Fatouma Bio Sani — fisc OVERDUE → exception)");
+  console.log("  Citoyen 5: 5678-9012-3456 / demo123 (Anatole Agbessi — registre incomplet → EXTRACTION_REQUIRED)");
 }
 
 main()

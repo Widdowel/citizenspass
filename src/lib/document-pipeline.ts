@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { prisma } from "./prisma";
-import { lookupByUserId, checkEligibility, extractDataForDocument } from "./registry";
+import { lookupByUserId, checkEligibility, extractDataForDocument, checkRegistryCompleteness } from "./registry";
 import { signPayload, buildPayload } from "./signature";
 import { generateOfficialPdf } from "./pdf-generator";
 import { logAudit, AuditAction } from "./audit";
@@ -81,6 +81,18 @@ export async function runPipeline(requestId: string, baseUrl: string) {
       await markException(
         requestId,
         "Citoyen introuvable au registre ANIP. Enrôlement biométrique requis.",
+      );
+      return;
+    }
+
+    // 1.bis — Vérification de la complétude du registre
+    // Si l'acte d'origine n'est pas (encore) numérisé, on bascule en EXTRACTION_REQUIRED
+    const completeness = checkRegistryCompleteness(citizen, request.type);
+    if (!completeness.complete) {
+      await markExtractionRequired(
+        requestId,
+        completeness.missingFields,
+        completeness.extractionTarget,
       );
       return;
     }
@@ -216,6 +228,30 @@ export async function runPipeline(requestId: string, baseUrl: string) {
     const reason = err instanceof Error ? err.message : "Erreur inconnue";
     await markException(requestId, `Erreur technique : ${reason}`);
   }
+}
+
+async function markExtractionRequired(
+  requestId: string,
+  missingFields: string[],
+  extractionTarget: string,
+) {
+  await prisma.request.update({
+    where: { id: requestId },
+    data: {
+      status: "EXTRACTION_REQUIRED",
+      pipelineStep: "EXTRACTION_REQUIRED",
+      extractionTarget,
+      processingEndedAt: new Date(),
+      exceptionReason: `L'acte d'origine n'est pas encore numérisé au registre national. Une équipe de la ${extractionTarget} va procéder à la numérisation. Délai estimé : 2 à 6 heures ouvrées. Vous serez notifié dès délivrance.`,
+    },
+  });
+  await logAudit({
+    actorType: "SYSTEM",
+    action: "EXTRACTION_REQUIRED",
+    resourceType: "Request",
+    resourceId: requestId,
+    metadata: { missingFields, extractionTarget },
+  });
 }
 
 async function markException(requestId: string, reason: string) {

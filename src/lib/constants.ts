@@ -7,6 +7,7 @@ export const DOC_TYPES: Record<string, string> = {
 };
 
 export const REQUEST_STATUS: Record<string, { label: string; color: string }> = {
+  AWAITING_PAYMENT: { label: "En attente de paiement", color: "bg-orange-100 text-orange-800" },
   PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
   VERIFYING: { label: "Vérification d'identité", color: "bg-blue-100 text-blue-800" },
   CHECKING: { label: "Contrôle des sources", color: "bg-blue-100 text-blue-800" },
@@ -14,6 +15,7 @@ export const REQUEST_STATUS: Record<string, { label: string; color: string }> = 
   SIGNING: { label: "Signature numérique", color: "bg-purple-100 text-purple-800" },
   READY: { label: "Prêt", color: "bg-emerald-100 text-emerald-800" },
   EXCEPTION: { label: "Exception — revue manuelle", color: "bg-orange-100 text-orange-800" },
+  EXTRACTION_REQUIRED: { label: "Numérisation en cours", color: "bg-violet-100 text-violet-800" },
   REJECTED: { label: "Rejeté", color: "bg-red-100 text-red-800" },
 };
 
@@ -73,4 +75,61 @@ export const COUNTRY = {
   name: "République du Bénin",
   motto: "Fraternité — Justice — Travail",
   iso: "BEN",
+};
+
+// Tarifs en FCFA (timbre fiscal officiel + frais de service CitizenPass)
+export const DOC_PRICING: Record<string, { stamp: number; serviceFee: number }> = {
+  BIRTH_CERTIFICATE: { stamp: 500, serviceFee: 50 },
+  CRIMINAL_RECORD: { stamp: 1000, serviceFee: 100 },
+  RESIDENCE_CERTIFICATE: { stamp: 200, serviceFee: 50 },
+  NATIONALITY_CERTIFICATE: { stamp: 1000, serviceFee: 100 },
+  TAX_CERTIFICATE: { stamp: 500, serviceFee: 100 },
+};
+
+export function totalPrice(type: string): number {
+  const p = DOC_PRICING[type];
+  return p ? p.stamp + p.serviceFee : 0;
+}
+
+export const PAYMENT_METHODS = {
+  BJ_PAY: {
+    label: "BJ Pay (Gouvernement du Bénin)",
+    short: "BJ Pay",
+    color: "bg-[#008751]",
+    needsPhone: true,
+    badge: "Officiel",
+  },
+  MTN_MOMO: {
+    label: "MTN Mobile Money",
+    short: "MTN MoMo",
+    color: "bg-yellow-500",
+    needsPhone: true,
+  },
+  MOOV_MONEY: {
+    label: "Moov Money",
+    short: "Moov Money",
+    color: "bg-blue-600",
+    needsPhone: true,
+  },
+  CELTIIS_CASH: {
+    label: "Celtiis Cash",
+    short: "Celtiis",
+    color: "bg-red-600",
+    needsPhone: true,
+  },
+  CARD: {
+    label: "Carte bancaire (Visa / Mastercard)",
+    short: "Carte",
+    color: "bg-gray-700",
+    needsPhone: false,
+  },
+} as const;
+
+export type PaymentMethod = keyof typeof PAYMENT_METHODS;
+
+export const PAYMENT_STATUS: Record<string, { label: string; color: string }> = {
+  PENDING: { label: "En attente de paiement", color: "bg-yellow-100 text-yellow-800" },
+  COMPLETED: { label: "Payé", color: "bg-emerald-100 text-emerald-800" },
+  FAILED: { label: "Échec", color: "bg-red-100 text-red-800" },
+  REFUNDED: { label: "Remboursé", color: "bg-gray-100 text-gray-800" },
 };

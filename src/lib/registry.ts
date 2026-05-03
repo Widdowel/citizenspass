@@ -5,7 +5,38 @@ export type EligibilityCheck = {
   eligible: boolean;
   exceptionReason?: string;
   warnings?: string[];
+  needsExtraction?: boolean;
+  extractionTarget?: string;
 };
+
+const REQUIRED_FIELDS_BY_TYPE: Record<string, (keyof CitizenRegistry)[]> = {
+  BIRTH_CERTIFICATE: ["firstName", "lastName", "birthDate", "birthPlace", "birthCommune", "fatherName", "motherName"],
+  CRIMINAL_RECORD: ["firstName", "lastName", "birthDate", "birthPlace"],
+  RESIDENCE_CERTIFICATE: ["firstName", "lastName", "address", "commune", "department"],
+  NATIONALITY_CERTIFICATE: ["firstName", "lastName", "birthDate", "birthPlace", "birthCommune"],
+  TAX_CERTIFICATE: ["firstName", "lastName", "birthDate"],
+};
+
+export function checkRegistryCompleteness(
+  citizen: CitizenRegistry,
+  documentType: string,
+): { complete: boolean; missingFields: string[]; extractionTarget: string } {
+  const required = REQUIRED_FIELDS_BY_TYPE[documentType] ?? [];
+  const missing: string[] = [];
+  for (const f of required) {
+    const v = citizen[f];
+    if (v === null || v === undefined || v === "") missing.push(f as string);
+  }
+
+  let extractionTarget = "Mairie de Cotonou";
+  if (documentType === "CRIMINAL_RECORD" || documentType === "NATIONALITY_CERTIFICATE") {
+    extractionTarget = "Cour d'Appel de Cotonou";
+  } else if (citizen.birthCommune) {
+    extractionTarget = `Mairie de ${citizen.birthCommune}`;
+  }
+
+  return { complete: missing.length === 0, missingFields: missing, extractionTarget };
+}
 
 export async function lookupByCip(cip: string): Promise<CitizenRegistry | null> {
   return prisma.citizenRegistry.findUnique({ where: { cip } });
@@ -108,10 +139,10 @@ export function extractDataForDocument(
 
   const base: ExtractedData = {
     fullName,
-    birthDate: citizen.birthDate.toISOString().split("T")[0],
-    birthPlace: citizen.birthPlace,
-    birthCommune: citizen.birthCommune,
-    birthDepartment: citizen.birthDepartment,
+    birthDate: citizen.birthDate ? citizen.birthDate.toISOString().split("T")[0] : "",
+    birthPlace: citizen.birthPlace ?? "",
+    birthCommune: citizen.birthCommune ?? "",
+    birthDepartment: citizen.birthDepartment ?? "",
     gender: citizen.gender,
     nationality: citizen.nationality,
     fatherName: citizen.fatherName ?? undefined,
