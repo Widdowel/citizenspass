@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { runPipeline } from "@/lib/document-pipeline";
 import { logAudit } from "@/lib/audit";
 import { totalPrice } from "@/lib/constants";
+
+export const maxDuration = 60;
 
 // Endpoint démo : crée le Payment et le marque immédiatement comme COMPLETED.
 // Utilisé pour accélérer les démos. Désactivé en production avec
@@ -69,7 +71,9 @@ export async function POST(req: NextRequest) {
   });
 
   const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  void runPipeline(requestId, baseUrl);
+  after(async () => {
+    await runPipeline(requestId, baseUrl);
+  });
 
   return NextResponse.json({ ok: true, paymentId: payment.id });
 }

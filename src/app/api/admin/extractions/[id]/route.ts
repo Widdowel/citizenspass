@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { runPipeline } from "@/lib/document-pipeline";
 import { logAudit } from "@/lib/audit";
+
+export const maxDuration = 60;
 
 // L'agent administratif valide la numérisation : il complète le registre
 // avec les données extraites du registre papier physique.
@@ -88,7 +90,9 @@ export async function PATCH(
   });
 
   const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  void runPipeline(id, baseUrl);
+  after(async () => {
+    await runPipeline(id, baseUrl);
+  });
 
   return NextResponse.json({ ok: true });
 }

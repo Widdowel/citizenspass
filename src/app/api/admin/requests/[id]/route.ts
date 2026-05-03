@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { runPipeline } from "@/lib/document-pipeline";
 import { logAudit, AuditAction } from "@/lib/audit";
+
+export const maxDuration = 60;
 
 export async function PATCH(
   req: NextRequest,
@@ -37,7 +39,9 @@ export async function PATCH(
   // Si l'admin approuve une exception, on relance le pipeline en mode forcé
   if (status === "APPROVED") {
     const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-    void runPipeline(id, baseUrl);
+    after(async () => {
+      await runPipeline(id, baseUrl);
+    });
   }
 
   return NextResponse.json({ ok: true });

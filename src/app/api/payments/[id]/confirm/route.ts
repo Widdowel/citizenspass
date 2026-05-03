@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { runPipeline } from "@/lib/document-pipeline";
 import { logAudit } from "@/lib/audit";
+
+// Pipeline = ~3-5s, autorise jusqu'à 60s pour avoir de la marge
+export const maxDuration = 60;
 
 // Simulation du callback opérateur (Kkiapay/FedaPay) qui confirme le paiement.
 // En production: cet endpoint serait un webhook signé par l'opérateur.
@@ -51,9 +54,14 @@ export async function POST(
     },
   });
 
-  // Lance le pipeline maintenant que le paiement est validé
+  // Lance le pipeline en arrière-plan via `after` — la réponse est renvoyée
+  // immédiatement au client, et la fonction serverless reste vivante le temps
+  // que le pipeline termine (jusqu'à maxDuration secondes).
   const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  void runPipeline(payment.requestId, baseUrl);
+  const requestId = payment.requestId;
+  after(async () => {
+    await runPipeline(requestId, baseUrl);
+  });
 
   return NextResponse.json({ ok: true, payment: updated });
 }
