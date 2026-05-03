@@ -88,7 +88,7 @@ export default function PresentationPage() {
             Plateforme nationale de délivrance instantanée des documents administratifs.
           </p>
           <p className="text-lg text-white/70 max-w-3xl mb-10">
-            Inspirée d&apos;UAEPASS (Émirats), adaptée à la souveraineté béninoise. <strong>De plusieurs jours à quelques minutes</strong>, sans intervention humaine pour 95% des demandes, signature numérique cryptographique, vérification publique.
+            Une innovation souveraine béninoise. <strong>De plusieurs jours à quelques minutes</strong>, sans intervention humaine pour 95% des demandes, signature numérique cryptographique de l&apos;État, vérification publique.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-white/80">
             <span className="bg-white/10 backdrop-blur px-3 py-1.5 rounded">📱 Mobile-first</span>
