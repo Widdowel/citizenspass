@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import {
   ShieldCheck,
   LayoutDashboard,
@@ -9,6 +10,7 @@ import {
   Clock,
   LogOut,
   Settings,
+  KeyRound,
 } from "lucide-react";
 
 const navItems = [
@@ -16,6 +18,7 @@ const navItems = [
   { href: "/dashboard/documents", label: "Mes documents", icon: FileText },
   { href: "/dashboard/request-new", label: "Nouvelle demande", icon: FilePlus },
   { href: "/dashboard/requests", label: "Mes demandes", icon: Clock },
+  { href: "/dashboard/verifications", label: "Demandes de vérification", icon: KeyRound },
 ];
 
 export default async function DashboardLayout({
@@ -26,7 +29,19 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session?.user) redirect("/auth");
 
-  const user = session.user as { name?: string; cip?: string; nin?: string; role?: string };
+  const user = session.user as { id?: string; name?: string; cip?: string; nin?: string; role?: string };
+
+  // Compteur de demandes de vérification en attente
+  let pendingVerifs = 0;
+  if (user.id) {
+    pendingVerifs = await prisma.verificationRequest.count({
+      where: {
+        citizenId: user.id,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+      },
+    });
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -41,16 +56,24 @@ export default async function DashboardLayout({
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition text-sm"
-            >
-              <item.icon className="w-5 h-5 text-white/70" />
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const showBadge = item.href === "/dashboard/verifications" && pendingVerifs > 0;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 transition text-sm"
+              >
+                <item.icon className="w-5 h-5 text-white/70" />
+                <span className="flex-1">{item.label}</span>
+                {showBadge && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
+                    {pendingVerifs}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
           {user.role === "ADMIN" && (
             <Link
               href="/admin"

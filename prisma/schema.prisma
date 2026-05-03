@@ -8,21 +8,22 @@ datasource db {
 }
 
 model User {
-  id          String           @id @default(cuid())
-  cip         String           @unique
-  nin         String?          @unique
-  name        String
-  email       String?
-  phone       String?
-  password    String
-  role        String           @default("CITIZEN")
-  registryId  String?          @unique
-  registry    CitizenRegistry? @relation(fields: [registryId], references: [id])
-  documents   Document[]
-  requests    Request[]
-  auditLogs   AuditLog[]
-  otpCodes    OtpCode[]
-  createdAt   DateTime         @default(now())
+  id              String                @id @default(cuid())
+  cip             String                @unique
+  nin             String?               @unique
+  name            String
+  email           String?
+  phone           String?
+  password        String
+  role            String                @default("CITIZEN")
+  registryId      String?               @unique
+  registry        CitizenRegistry?      @relation(fields: [registryId], references: [id])
+  documents       Document[]
+  requests        Request[]
+  auditLogs       AuditLog[]
+  otpCodes        OtpCode[]
+  verifications   VerificationRequest[]
+  createdAt       DateTime              @default(now())
 }
 
 model OtpCode {
@@ -160,6 +161,40 @@ model AuditLog {
 
   @@index([resourceType, resourceId])
   @@index([createdAt])
+}
+
+model VerifierApp {
+  id            String                @id @default(cuid())
+  apiKey        String                @unique
+  name          String                // ex: "BNP Paribas Bénin"
+  category      String                // BANK, EMPLOYER, EMBASSY, TELECOM, OTHER
+  contactEmail  String?
+  isActive      Boolean               @default(true)
+  createdAt     DateTime              @default(now())
+  requests      VerificationRequest[]
+}
+
+model VerificationRequest {
+  id                String       @id @default(cuid())
+  verifierId        String
+  verifier          VerifierApp  @relation(fields: [verifierId], references: [id])
+  citizenCip        String       // CIP du citoyen cible
+  citizenId         String?
+  citizen           User?        @relation(fields: [citizenId], references: [id])
+  attributesAsked   String       // JSON string array
+  purpose           String?      // pourquoi la banque demande
+  status            String       @default("PENDING")
+                                 // PENDING -> AUTHORIZED / DENIED / EXPIRED
+  responseAttrs     String?      // JSON object des valeurs si autorisé
+  responseSignature String?      // signature de la réponse
+  responseKeyId     String?
+  responseHash      String?
+  authorizedAt      DateTime?
+  deniedAt          DateTime?
+  expiresAt         DateTime
+  createdAt         DateTime     @default(now())
+
+  @@index([citizenCip, status])
 }
 
 model SigningKey {
