@@ -27,28 +27,45 @@ async function main() {
     const sql = await fs.readFile(file, "utf-8");
     console.log(`\n  ▶ ${dir}`);
 
-    try {
-      await client.executeMultiple(sql);
-      console.log(`    ✓ appliquée`);
-    } catch (e) {
-      const msg = (e as Error).message;
-      if (msg.includes("already exists")) {
-        console.log(`    ⚠ déjà appliquée (skip)`);
-        continue;
+    // Découpe sur ; en fin de statement.
+    // Strip les lignes de commentaires en DÉBUT de chaque statement seulement
+    // (pour ne pas re-confondre un commentaire `-- CreateTable` avec un
+    // statement entier comme c'était le cas avant).
+    const statements = sql
+      .split(/;\s*\n/)
+      .map((s) => s.replace(/^\s*(--[^\n]*\n)+/g, "").trim())
+      .filter((s) => s.length > 0);
+
+    let applied = 0;
+    let skipped = 0;
+    for (const stmt of statements) {
+      try {
+        await client.execute(stmt);
+        applied++;
+      } catch (e) {
+        const msg = (e as Error).message;
+        if (
+          msg.includes("already exists") ||
+          msg.includes("duplicate column name")
+        ) {
+          skipped++;
+          continue;
+        }
+        console.error(`    ✗ ${msg}`);
+        console.error(`    Statement : ${stmt.slice(0, 120)}...`);
+        throw e;
       }
-      console.error(`    ✗ ${msg}`);
-      throw e;
     }
+    console.log(`    ✓ ${applied} statement(s) appliqué(s), ${skipped} déjà présent(s)`);
   }
 
   // Vérification : compter les tables après push
   const check = await client.execute(
-    "SELECT count(*) as n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+    "SELECT count(*) as n FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_prisma_%'",
   );
   const tableCount = (check.rows[0] as unknown as { n: number }).n;
   console.log(`\n→ Tables présentes sur Turso après migration : ${tableCount}`);
-
-  console.log(`\n✓ Toutes les migrations ont été appliquées sur Turso.`);
+  console.log(`✓ Toutes les migrations ont été appliquées sur Turso.`);
   await client.close();
 }
 
