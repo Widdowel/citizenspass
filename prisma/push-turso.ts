@@ -44,9 +44,12 @@ async function main() {
         applied++;
       } catch (e) {
         const msg = (e as Error).message;
+        // Skip pour idempotence et migrations rejouées sur schéma évolué
         if (
           msg.includes("already exists") ||
-          msg.includes("duplicate column name")
+          msg.includes("duplicate column name") ||
+          msg.includes("no such column") || // colonne supprimée par migration ultérieure
+          msg.includes("no such table")     // table supprimée par migration ultérieure
         ) {
           skipped++;
           continue;
