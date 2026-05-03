@@ -105,33 +105,36 @@ export default function PresentationPage() {
       </section>
 
       {/* CONSTAT */}
-      <Section id="constat" eyebrow="01 · Constat" title="L'administration béninoise a déjà numérisé ses bases — pas son guichet">
+      <Section id="constat" eyebrow="01 · Constat" title="L'administration béninoise est numérisée — mais l'expérience citoyen reste éclatée">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <p className="text-lg text-gray-700">
-              Le Bénin a fait depuis 2017 d&apos;immenses progrès sur la <strong>digitalisation</strong> :
-              ANIP a enrôlé biométriquement plus de <strong>9 millions de personnes</strong>, le portail
-              <strong> service-public.bj</strong> recense <strong>1 200+ démarches</strong> et capte déjà
-              <strong> près de 90% des demandes</strong>, la connectivité mobile dépasse les <strong>90% de la population</strong>.
+              Le Bénin est l&apos;un des pays africains les plus avancés en gouvernance électronique. Le portail{" "}
+              <strong>service-public.bj</strong> (ASIN) recense <strong>1 200+ services</strong> — des
+              actes d&apos;état civil aux agréments sectoriels (pharmacie, télécoms, drones, marchés publics).
+              Plusieurs sont déjà délivrés <strong>100% en ligne</strong> avec PDF officiel
+              (attestation fiscale, attestation BAC…).
             </p>
             <p className="text-lg text-gray-700">
-              <strong>Mais une fois la demande déposée en ligne, le traitement reste essentiellement manuel.</strong>{" "}
-              Le citoyen attend toujours <strong>2 jours à 1 mois</strong> pour son casier ou son acte
-              de naissance, doit revenir au guichet pour récupérer le document tamponné, et essuie des coûts
-              cachés estimés au double du timbre officiel.
+              <strong>Mais le citoyen vit une expérience fragmentée.</strong> Il doit jongler entre
+              une dizaine de portails sectoriels (DGI/eservices, anip.bj, anatt.bj, abrp.bj, marchés
+              publics…), créer plusieurs comptes, mémoriser plusieurs identifiants, et pour la majorité
+              des démarches courantes (acte de naissance, casier, certificat de résidence) le retrait
+              du document tamponné reste manuel.
             </p>
             <p className="text-lg text-gray-700 mt-4">
-              <strong className="text-[#008751]">BJ PASS ne remplace pas service-public.bj.</strong> Il vient
-              s&apos;y greffer comme la couche d&apos;<strong>orchestration et de délivrance instantanée</strong>{" "}
-              qui manque entre le portail et le citoyen — pour passer du « digital de la demande » au
-              « digital du document signé livré ».
+              <strong className="text-[#008751]">BJ PASS unifie cette expérience pour le citoyen.</strong>{" "}
+              Une identité numérique unique (CIP + biométrie), un wallet officiel unique, une délivrance
+              instantanée signée crypto pour les <strong>30 documents administratifs personnels les plus
+              demandés</strong>. Le portail service-public.bj reste l&apos;écosystème de services. BJ PASS
+              est <strong>l&apos;application citoyenne mobile qui réunit tout</strong>.
             </p>
           </div>
           <div className="bg-[#FAF7E8] rounded-2xl p-6 space-y-4 border border-[#FCD116]/30">
             <Stat icon={Users} value="13 M" label="population du Bénin" />
             <Stat icon={Smartphone} value="9 M+" label="citoyens enrôlés ANIP" />
-            <Stat icon={Globe} value="90%+" label="couverture mobile" />
-            <Stat icon={FileCheck2} value="~21 M" label="actes administratifs / an estimés" />
+            <Stat icon={Globe} value="1 200+" label="services référencés sur service-public.bj" />
+            <Stat icon={FileCheck2} value="~30" label="documents personnels les plus demandés (cible BJ PASS)" />
           </div>
         </div>
       </Section>
@@ -173,51 +176,67 @@ export default function PresentationPage() {
       </Section>
 
       {/* SOLUTION */}
-      <Section id="solution" eyebrow="03 · Solution" title="BJ PASS — la couche de délivrance instantanée au-dessus de service-public.bj">
+      <Section id="solution" eyebrow="03 · Solution" title="BJ PASS — l'application citoyenne unique pour tous les documents personnels">
         <div className="grid md:grid-cols-2 gap-10 items-start">
           <div>
             <p className="text-lg text-gray-700 mb-4">
-              <strong>L&apos;État dispose déjà des données et a déjà digitalisé la demande</strong> via{" "}
-              <strong>service-public.bj</strong> (1 200+ démarches en ligne, ~90% des dossiers transitant
-              par le portail). Le maillon manquant : <strong>la délivrance instantanée</strong> du
-              document signé.
+              service-public.bj est et reste l&apos;écosystème national des services administratifs (1 200+).
+              BJ PASS apporte la couche manquante côté citoyen : <strong>une application mobile unique</strong>{" "}
+              qui réunit l&apos;identité numérique (CIP biométrique), le wallet officiel, et la délivrance
+              instantanée signée pour les <strong>30 documents personnels les plus demandés</strong>.
             </p>
             <p className="text-lg text-gray-700">
-              BJ PASS s&apos;intègre avec service-public.bj en lui ajoutant la couche
-              d&apos;<strong>orchestration automatique inter-administrations</strong> : interrogation
-              ANIP, Cour d&apos;Appel, DGI, mairies, RCCM, DTT, ministères en quelques secondes,
-              génération PDF officiel, signature numérique de l&apos;autorité émettrice. Le citoyen
-              ne quitte JAMAIS son téléphone.
+              Le citoyen ne crée plus 5 comptes sur 5 portails. Il s&apos;authentifie une seule fois,
+              voit son catalogue personnalisé selon son éligibilité, paye dans l&apos;app (BJ Pay),
+              régularise dans l&apos;app (fiscal, judiciaire), reçoit son PDF signé crypto en moins de
+              90 secondes dans son wallet, et le partage à un tiers (banque, ambassade, employeur)
+              via un QR vérifiable.
             </p>
           </div>
           <div className="space-y-3">
-            <Feature icon={Zap} title="Délivrance automatique 95%" desc="Pour la majorité des cas, aucune intervention humaine. Le pipeline traite tout en moins de 90 secondes." />
-            <Feature icon={Lock} title="Signature cryptographique" desc="RSA-2048/SHA-256, vérifiable hors-ligne par n'importe qui via la clé publique de l'autorité émettrice." />
-            <Feature icon={ShieldCheck} title="Souveraineté totale" desc="Hébergement physique au Bénin. Aucune donnée ne quitte le territoire. Conformité Loi 2017-20." />
-            <Feature icon={Users} title="Vérification publique" desc="Banques, ambassades, employeurs vérifient un document en 2 secondes via QR ou API B2B sécurisée." />
+            <Feature icon={Fingerprint} title="Identité unique" desc="Un seul compte, un seul login (CIP + biométrie + OTP) pour TOUTES les démarches couvertes par BJ PASS." />
+            <Feature icon={Zap} title="Délivrance instantanée" desc="Pipeline d'orchestration inter-administrations en moins de 90 secondes. PDF signé livré dans le wallet." />
+            <Feature icon={Lock} title="Signature cryptographique" desc="RSA-2048/SHA-256 par l'autorité émettrice. Vérifiable hors-ligne. Anti-falsification natif." />
+            <Feature icon={Users} title="Vérification publique" desc="Banques, ambassades, employeurs vérifient un document en 2 secondes via QR ou API B2B avec attributs signés." />
           </div>
         </div>
 
         <div className="mt-10 bg-[#FAF7E8] rounded-xl p-6 border border-[#FCD116]/40">
           <h4 className="font-bold mb-3 flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-[#008751]" />
-            Positionnement clair vis-à-vis de l&apos;existant
+            Positionnement clair vis-à-vis de l&apos;écosystème existant
           </h4>
-          <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <div className="font-bold text-[#1E3A5F] mb-1">service-public.bj</div>
-              <div className="text-gray-600">Portail de DEMANDE en ligne. Information exhaustive, formulaires électroniques. Le citoyen dépose son dossier.</div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="font-bold text-[#1E3A5F] mb-2">service-public.bj &amp; portails sectoriels</div>
+              <div className="text-sm text-gray-600 mb-2">
+                Écosystème national des services administratifs (1 200+ services).
+              </div>
+              <ul className="text-xs text-gray-500 space-y-1 list-disc list-inside">
+                <li>Référence et orchestration des services</li>
+                <li>Agréments sectoriels (pharmacie, télécom, drones)</li>
+                <li>Marchés publics, RH, formations</li>
+                <li>Fiches d&apos;information et formulaires</li>
+              </ul>
             </div>
-            <div className="flex items-center justify-center text-2xl text-[#008751]">+</div>
-            <div>
-              <div className="font-bold text-[#008751] mb-1">BJ PASS</div>
-              <div className="text-gray-600">Couche de DÉLIVRANCE automatique. Orchestration inter-admin, signature crypto, PDF livré en moins de 90 secondes dans le wallet citoyen.</div>
+            <div className="bg-white rounded-lg p-4 border border-[#008751]/40">
+              <div className="font-bold text-[#008751] mb-2">BJ PASS</div>
+              <div className="text-sm text-gray-600 mb-2">
+                Application citoyenne mobile unique pour les documents personnels.
+              </div>
+              <ul className="text-xs text-gray-500 space-y-1 list-disc list-inside">
+                <li>Identité unique (CIP biométrique)</li>
+                <li>Wallet officiel des documents</li>
+                <li>Délivrance instantanée signée crypto</li>
+                <li>Régularisation in-app (fiscal, judiciaire)</li>
+                <li>Vérification publique par QR</li>
+              </ul>
             </div>
           </div>
           <p className="text-xs text-gray-500 mt-4">
-            BJ PASS ne se substitue pas à service-public.bj. Il complète le portail existant en
-            résolvant le seul problème qui demeure : la latence entre la demande digitale et la
-            délivrance physique du document tamponné.
+            <strong>BJ PASS ne remplace pas service-public.bj.</strong> Il s&apos;intègre nativement à
+            l&apos;écosystème ASIN comme la <em>face mobile-first du citoyen</em>, dédiée aux documents
+            personnels qu&apos;il manipule régulièrement (~30 actes, soit ~90% des demandes citoyennes).
           </p>
         </div>
       </Section>
