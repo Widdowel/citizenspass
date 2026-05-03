@@ -125,24 +125,49 @@ model Document {
 }
 
 model Request {
-  id                  String    @id @default(cuid())
+  id                  String              @id @default(cuid())
   type                String
   reason              String?
-  status              String    @default("PENDING")
+  status              String              @default("PENDING")
   pipelineStep        String?
   exceptionReason     String?
-  extractionTarget    String?   // Mairie/Cour à contacter pour numérisation
+  extractionTarget    String?             // Mairie/Cour à contacter pour numérisation
   extractionAt        DateTime?
   note                String?
-  autoProcessed       Boolean   @default(false)
+  autoProcessed       Boolean             @default(false)
   processingStartedAt DateTime?
   processingEndedAt   DateTime?
   userId              String
-  user                User      @relation(fields: [userId], references: [id])
+  user                User                @relation(fields: [userId], references: [id])
   document            Document?
   payment             Payment?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  resolution          ResolutionRequest?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+}
+
+model ResolutionRequest {
+  id                String   @id @default(cuid())
+  requestId         String   @unique
+  request           Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId            String
+  // Type de blocage : FISCAL_DEBT (auto-résolu par paiement) ou JUDICIAL_REVIEW (greffe)
+  type              String
+  // Montant de la régularisation (FCFA) — pour FISCAL = dette + frais, pour JUDICIAL = frais de revue
+  amount            Int
+  description       String   // explication au citoyen
+  // Statut : PENDING_PAYMENT → PENDING_REVIEW → APPROVED / REJECTED / RESOLVED_AUTO
+  status            String   @default("PENDING_PAYMENT")
+  paymentId         String?
+  citizenComment    String?  // commentaire/justificatif du citoyen
+  reviewerNote      String?
+  reviewedById      String?
+  reviewedAt        DateTime?
+  resolvedAt        DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([type, status])
 }
 
 model Payment {

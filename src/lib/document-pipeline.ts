@@ -4,6 +4,7 @@ import { lookupByUserId, checkEligibility, extractDataForDocument, checkRegistry
 import { signPayload, buildPayload } from "./signature";
 import { generateOfficialPdf } from "./pdf-generator";
 import { logAudit, AuditAction } from "./audit";
+import { createResolutionRequest } from "./resolution";
 import {
   DOC_TYPES,
   DOC_AUTHORITY,
@@ -111,6 +112,16 @@ export async function runPipeline(requestId: string, baseUrl: string) {
     });
     if (!eligibility.eligible) {
       await markException(requestId, eligibility.exceptionReason ?? "Inéligible");
+      // Création automatique d'une voie de résolution pour les cas externes
+      // → le citoyen peut payer/régulariser SANS QUITTER L'APP
+      if (citizen.fiscalStatus === "OVERDUE" && request.type === "TAX_CERTIFICATE") {
+        await createResolutionRequest(requestId, request.userId, "FISCAL_DEBT");
+      } else if (
+        citizen.judicialStatus === "ONGOING" &&
+        request.type === "CRIMINAL_RECORD"
+      ) {
+        await createResolutionRequest(requestId, request.userId, "JUDICIAL_REVIEW");
+      }
       return;
     }
 

@@ -1,9 +1,9 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DOC_TYPES, REQUEST_STATUS } from "@/lib/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock } from "lucide-react";
+import { Clock, AlertCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +14,7 @@ export default async function RequestsPage() {
   const requests = await prisma.request.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { document: true },
+    include: { document: true, resolution: true },
   });
 
   return (
@@ -56,10 +56,10 @@ export default async function RequestsPage() {
               color: "bg-gray-100 text-gray-800",
             };
             return (
-              <Card key={req.id}>
+              <Card key={req.id} className={req.resolution && req.resolution.status === "PENDING_PAYMENT" ? "border-orange-200" : ""}>
                 <CardContent className="py-4">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-medium">
                         {DOC_TYPES[req.type] || req.type}
                       </h3>
@@ -92,6 +92,38 @@ export default async function RequestsPage() {
                       )}
                     </div>
                   </div>
+
+                  {/* Bandeau de résolution si action requise */}
+                  {req.resolution && req.resolution.status === "PENDING_PAYMENT" && (
+                    <Link href={`/dashboard/resolutions/${req.resolution.id}`}>
+                      <div className="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-3 hover:bg-orange-100 transition-colors cursor-pointer">
+                        <AlertCircle className="w-5 h-5 text-orange-600 shrink-0" />
+                        <div className="flex-1 text-sm">
+                          <div className="font-semibold text-orange-900">
+                            Action requise — régularisation possible dans l&apos;app
+                          </div>
+                          <div className="text-orange-700 text-xs">
+                            {req.resolution.type === "FISCAL_DEBT"
+                              ? "Payez votre dette fiscale dans CitizenPass — quitus généré immédiatement."
+                              : "Demandez une revue accélérée par le greffe — sans déplacement."}
+                          </div>
+                        </div>
+                        <Button size="sm" className="bg-orange-600 hover:bg-orange-700">
+                          Régulariser
+                          <ArrowRight className="ml-1 w-3 h-3" />
+                        </Button>
+                      </div>
+                    </Link>
+                  )}
+
+                  {req.resolution && req.resolution.status === "PENDING_REVIEW" && (
+                    <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center gap-2 text-sm">
+                      <Clock className="w-4 h-4 text-yellow-600" />
+                      <span className="text-yellow-900">
+                        En attente de validation du greffe (quelques heures)
+                      </span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );

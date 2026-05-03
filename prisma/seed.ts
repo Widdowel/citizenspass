@@ -19,7 +19,7 @@ type CitizenSeed = {
   cip: string;
   nin: string | null;
   password: string;
-  role: "ADMIN" | "CITIZEN";
+  role: "ADMIN" | "ADMIN_GREFFE" | "ADMIN_MAIRIE" | "ADMIN_DGI" | "CITIZEN";
   phone?: string;
   registry?: {
     firstName: string;
@@ -52,6 +52,20 @@ const SEED: CitizenSeed[] = [
     nin: null,
     password: "admin123",
     role: "ADMIN",
+  },
+  {
+    cip: "GREFFE-001",
+    nin: null,
+    password: "greffe123",
+    role: "ADMIN_GREFFE",
+    phone: "+229 21 30 00 01",
+  },
+  {
+    cip: "MAIRIE-COT-001",
+    nin: null,
+    password: "mairie123",
+    role: "ADMIN_MAIRIE",
+    phone: "+229 21 31 00 01",
   },
   {
     cip: "1234-5678-9012",
@@ -219,24 +233,28 @@ async function main() {
       registryId = reg.id;
     }
 
+    const ADMIN_NAMES: Record<string, string> = {
+      "ADMIN-001": "Administrateur National",
+      "GREFFE-001": "Greffier — Cour d'Appel de Cotonou",
+      "MAIRIE-COT-001": "Agent État Civil — Mairie de Cotonou",
+      "DGI-001": "Agent DGI — Direction Générale des Impôts",
+    };
+
     const fullName = c.registry
       ? [c.registry.firstName, c.registry.middleName, c.registry.lastName]
           .filter(Boolean)
           .join(" ")
-      : c.cip === "ADMIN-001"
-      ? "Administrateur National"
-      : c.cip;
+      : ADMIN_NAMES[c.cip] ?? c.cip;
 
     await prisma.user.create({
       data: {
         cip: c.cip,
         nin: c.nin,
         name: fullName,
-        email:
-          c.cip === "ADMIN-001"
-            ? "admin@citizenpass.bj"
-            : `${c.registry!.firstName.toLowerCase()}@example.bj`,
-        phone: c.phone ?? (c.role === "ADMIN" ? "+229 97 00 00 01" : undefined),
+        email: c.registry
+          ? `${c.registry.firstName.toLowerCase()}@example.bj`
+          : `${c.cip.toLowerCase()}@citizenpass.bj`,
+        phone: c.phone ?? (c.role !== "CITIZEN" ? "+229 97 00 00 01" : undefined),
         password: hashSync(c.password, 10),
         role: c.role,
         registryId,
@@ -246,11 +264,13 @@ async function main() {
 
   console.log("✓ Seed completed.");
   console.log("  Admin:    ADMIN-001 / admin123");
-  console.log("  Citoyen 1: 1234-5678-9012 / demo123 (Koffi Adégbola — clean)");
-  console.log("  Citoyen 2: 2345-6789-0123 / demo123 (Adjoa Mensah — fisc PENDING)");
-  console.log("  Citoyen 3: 3456-7890-1234 / demo123 (Yves Houngbédji — JUDICIAL ONGOING → exception)");
-  console.log("  Citoyen 4: 4567-8901-2345 / demo123 (Fatouma Bio Sani — fisc OVERDUE → exception)");
-  console.log("  Citoyen 5: 5678-9012-3456 / demo123 (Anatole Agbessi — registre incomplet → EXTRACTION_REQUIRED)");
+  console.log("  Greffier: GREFFE-001 / greffe123 (Cour d'Appel)");
+  console.log("  Mairie:   MAIRIE-COT-001 / mairie123 (Mairie de Cotonou)");
+  console.log("  Citoyen 1: 1234-5678-9012 / demo123 (Koffi — clean)");
+  console.log("  Citoyen 2: 2345-6789-0123 / demo123 (Adjoa — fisc PENDING)");
+  console.log("  Citoyen 3: 3456-7890-1234 / demo123 (Yves — JUDICIAL → résolution greffe)");
+  console.log("  Citoyen 4: 4567-8901-2345 / demo123 (Fatouma — fisc OVERDUE → résolution auto)");
+  console.log("  Citoyen 5: 5678-9012-3456 / demo123 (Anatole — registre incomplet → extraction)");
 }
 
 main()
