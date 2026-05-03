@@ -70,6 +70,7 @@ export default function RequestNewPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [paymentSubmitting, setPaymentSubmitting] = useState(false);
   const [paymentStage, setPaymentStage] = useState<"idle" | "sending" | "confirming" | "done">("idle");
+  const [skipping, setSkipping] = useState(false);
   const [reqState, setReqState] = useState<RequestState | null>(null);
   const [error, setError] = useState("");
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -156,6 +157,26 @@ export default function RequestNewPage() {
     await new Promise((r) => setTimeout(r, 600));
     setStep("processing");
     setPaymentSubmitting(false);
+    pollingRef.current = setInterval(() => poll(requestId), 700);
+  }
+
+  async function skipPayment() {
+    if (!requestId) return;
+    setError("");
+    setSkipping(true);
+    const res = await fetch("/api/payments/skip-demo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ requestId }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error ?? "Skip indisponible");
+      setSkipping(false);
+      return;
+    }
+    setSkipping(false);
+    setStep("processing");
     pollingRef.current = setInterval(() => poll(requestId), 700);
   }
 
@@ -410,7 +431,7 @@ export default function RequestNewPage() {
 
             <Button
               onClick={submitPayment}
-              disabled={!paymentMethod || paymentSubmitting}
+              disabled={!paymentMethod || paymentSubmitting || skipping}
               className="w-full bg-[#008751] hover:bg-[#006b41] h-11"
             >
               {paymentSubmitting ? (
@@ -424,6 +445,15 @@ export default function RequestNewPage() {
                 <>Payer {formatXOF(price)}</>
               )}
             </Button>
+
+            <button
+              type="button"
+              onClick={skipPayment}
+              disabled={paymentSubmitting || skipping}
+              className="w-full text-xs text-amber-700 hover:text-amber-900 underline-offset-4 hover:underline disabled:opacity-50"
+            >
+              {skipping ? "Saut en cours..." : "⚡ Sauter le paiement (mode démo uniquement)"}
+            </button>
 
             <p className="text-xs text-gray-400 flex items-start gap-2">
               <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-[#008751]" />
