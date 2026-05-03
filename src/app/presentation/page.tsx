@@ -45,7 +45,7 @@ const navSections = [
   { id: "marche", label: "Marché" },
   { id: "modele", label: "Modèle économique" },
   { id: "phasage", label: "Phasage" },
-  { id: "cedeao", label: "Vision régionale" },
+  { id: "exportable", label: "Architecture exportable" },
   { id: "legal", label: "Cadre légal" },
 ];
 
@@ -384,89 +384,86 @@ export default function PresentationPage() {
         </div>
       </Section>
 
-      {/* VISION RÉGIONALE — CEDEAO PASS */}
-      <Section id="cedeao" eyebrow="11 · Vision régionale" title="Du BJ PASS au CEDEAO PASS — le Bénin pionnier d'identité numérique en Afrique de l'Ouest" dark>
+      {/* ARCHITECTURE EXPORTABLE */}
+      <Section id="exportable" eyebrow="11 · Architecture exportable" title="Un savoir-faire béninois bankable et réplicable" dark>
         <div className="grid md:grid-cols-2 gap-10 items-start mb-10">
           <div>
             <p className="text-lg text-gray-700 mb-4">
-              <strong>BJ PASS est conçu dès le départ comme un modèle réplicable.</strong>{" "}
-              Une fois éprouvé au Bénin, son architecture est transposable à chacun des 14 autres
-              États membres de la CEDEAO, qui partagent un cadre juridique commun (Acte additionnel
-              A/SA.1/01/07 sur la signature électronique), une carte d&apos;identité biométrique
-              CEDEAO, et une libre circulation déjà actée.
+              BJ PASS sert avant tout le citoyen béninois. Mais son architecture, conçue dès l&apos;origine
+              pour la <strong>souveraineté nationale</strong>, est entièrement <strong>réutilisable</strong>{" "}
+              par toute administration disposant d&apos;un identifiant national et de registres sectoriels.
             </p>
             <p className="text-lg text-gray-700">
-              Le passage à <strong>CEDEAO PASS</strong> est l&apos;étape qui transforme le Bénin
-              de simple utilisateur d&apos;identité numérique à <strong>fournisseur régional</strong> :
-              chaque pays exploite son propre <em>XX PASS</em> souverain, et un protocole d&apos;interopérabilité
-              CEDEAO PASS permet à un Béninois de prouver son identité au Sénégal, de retirer son casier
-              au Ghana, ou de vérifier un quitus fiscal nigérian — sans déplacement.
+              C&apos;est un atout pour le pays : si demain l&apos;État souhaite valoriser à
+              l&apos;international le savoir-faire technologique développé localement, BJ PASS constitue
+              une <strong>plateforme exportable</strong> — chaque déploiement reste 100% souverain dans
+              le pays acquéreur, l&apos;originalité technique reste béninoise.
             </p>
           </div>
           <div className="bg-white rounded-2xl border-2 border-[#FCD116]/40 p-6">
             <div className="flex items-center gap-3 mb-4">
               <Globe2 className="w-7 h-7 text-[#008751]" />
-              <h4 className="font-bold text-lg">15 États membres CEDEAO</h4>
+              <h4 className="font-bold text-lg">Bankable</h4>
             </div>
-            <div className="grid grid-cols-2 gap-y-1 gap-x-3 text-sm text-gray-700">
-              <div>🇧🇯 Bénin (pilote)</div>
-              <div>🇧🇫 Burkina Faso</div>
-              <div>🇨🇻 Cap-Vert</div>
-              <div>🇨🇮 Côte d&apos;Ivoire</div>
-              <div>🇬🇲 Gambie</div>
-              <div>🇬🇭 Ghana</div>
-              <div>🇬🇳 Guinée</div>
-              <div>🇬🇼 Guinée-Bissau</div>
-              <div>🇱🇷 Liberia</div>
-              <div>🇲🇱 Mali</div>
-              <div>🇳🇪 Niger</div>
-              <div>🇳🇬 Nigeria</div>
-              <div>🇸🇳 Sénégal</div>
-              <div>🇸🇱 Sierra Leone</div>
-              <div>🇹🇬 Togo</div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
-              <strong>~400 millions</strong> de citoyens · marché total estimé{" "}
-              <strong>~600 milliards FCFA / an</strong>
+            <p className="text-sm text-gray-700 mb-4">
+              Les bailleurs multilatéraux financent prioritairement les projets d&apos;identité numérique
+              dotés d&apos;une architecture réplicable et d&apos;une gouvernance souveraine claire.
+            </p>
+            <div className="space-y-2 text-sm text-gray-700">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#008751]" />
+                Banque Mondiale — programme ID4D
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#008751]" />
+                Banque Africaine de Développement (BAD)
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#008751]" />
+                BOAD, BIDC — financements régionaux
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#008751]" />
+                AFD, GIZ — coopération bilatérale
+              </div>
             </div>
           </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl p-5 border border-gray-200">
-            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Phase 1</div>
-            <h4 className="font-bold mb-1">BJ PASS national</h4>
+            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Souveraineté native</div>
+            <h4 className="font-bold mb-1">Chaque déploiement isolé</h4>
             <p className="text-sm text-gray-600">
-              Déploiement Bénin avec les 18 documents administratifs et l&apos;écosystème complet
-              (paiement, résolutions, vérifications B2B).
+              L&apos;architecture est conçue pour que chaque administration cliente conserve l&apos;intégralité
+              de ses données dans son propre datacenter, ses propres clés cryptographiques, son propre cadre
+              légal. Aucune fédération imposée.
             </p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-200">
-            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Phase 2</div>
-            <h4 className="font-bold mb-1">Réplication bilatérale</h4>
+            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Modèle commercial</div>
+            <h4 className="font-bold mb-1">Licence + intégration</h4>
             <p className="text-sm text-gray-600">
-              Transfert technologique vers 2-3 États voisins (Togo, Côte d&apos;Ivoire, Niger).
-              Chaque pays exploite son propre PASS souverain sur la même architecture.
+              Le code source et l&apos;expertise restent propriété béninoise. Vente possible sous forme de
+              licence d&apos;usage + accompagnement à l&apos;intégration locale, créatrice
+              d&apos;emplois qualifiés au Bénin.
             </p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-[#FCD116]/40">
-            <div className="text-xs uppercase font-bold text-[#FCD116] mb-2">Phase 3</div>
-            <h4 className="font-bold mb-1">CEDEAO PASS — interopérabilité</h4>
+            <div className="text-xs uppercase font-bold text-[#FCD116] mb-2">Image du pays</div>
+            <h4 className="font-bold mb-1">Bénin, pôle technologique</h4>
             <p className="text-sm text-gray-600">
-              Protocole commun de fédération d&apos;identités. Un citoyen authentifié dans son
-              pays peut accéder aux services administratifs des autres États membres, dans le
-              respect total de la souveraineté de chacun.
+              Une plateforme nationale réussie devient une vitrine technologique. Cas d&apos;usage concret
+              à présenter aux bailleurs et aux partenaires économiques internationaux.
             </p>
           </div>
         </div>
 
         <div className="mt-8 bg-gradient-to-r from-[#008751]/10 via-[#FCD116]/10 to-[#E11829]/10 rounded-xl p-6 border border-[#FCD116]/30">
-          <h4 className="font-bold mb-2">Atout stratégique pour le Bénin</h4>
           <p className="text-sm text-gray-700">
-            En portant la première initiative <strong>XX PASS</strong> de la sous-région, le Bénin
-            se positionne comme leader technologique régional, attire l&apos;intérêt des bailleurs
-            multilatéraux (BAD, Banque mondiale, BOAD, BIDC), et exporte un savoir-faire numérique
-            créateur d&apos;emplois qualifiés. Une opportunité de diplomatie numérique ouest-africaine.
+            <strong>Important :</strong> la priorité reste 100% le citoyen béninois. La dimension
+            exportable est un atout stratégique de long terme, sans incidence sur le déploiement national,
+            qui mobilise toute notre attention en Phase 1, 2 et 3.
           </p>
         </div>
       </Section>
