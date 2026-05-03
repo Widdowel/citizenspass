@@ -52,7 +52,7 @@ type RequestState = {
   payment?: { id: string; status: string; amount: number; method: string } | null;
 };
 
-type Step = "form" | "biometric" | "payment" | "processing" | "ready" | "exception";
+type Step = "form" | "biometric" | "creating" | "payment" | "processing" | "ready" | "exception";
 
 function formatXOF(n: number) {
   return new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
@@ -92,24 +92,32 @@ export default function RequestNewPage() {
     setStep("biometric");
     setBioStage("scanning");
     setTimeout(() => setBioStage("matched"), 2000);
-    setTimeout(() => createRequest(), 3000);
+    setTimeout(() => {
+      setStep("creating");
+      void createRequest();
+    }, 2800);
   }
 
   async function createRequest() {
-    const res = await fetch("/api/requests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type, reason }),
-    });
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error ?? "Erreur lors de la demande.");
+    try {
+      const res = await fetch("/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, reason }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error ?? "Erreur lors de la demande.");
+        setStep("form");
+        return;
+      }
+      const created = await res.json();
+      setRequestId(created.id);
+      setStep("payment");
+    } catch (e) {
+      setError("Erreur réseau. Réessayez.");
       setStep("form");
-      return;
     }
-    const created = await res.json();
-    setRequestId(created.id);
-    setStep("payment");
   }
 
   async function submitPayment() {
@@ -458,6 +466,26 @@ export default function RequestNewPage() {
             <p className="text-xs text-gray-400 flex items-start gap-2">
               <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-[#008751]" />
               Transactions sécurisées via l&apos;agrégateur national. Reçu fiscal numérique automatiquement émis.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ÉTAPE CREATING (transition entre bio matched et payment)
+  if (step === "creating") {
+    return (
+      <div className="max-w-md mx-auto">
+        <Card>
+          <CardContent className="pt-8 pb-8 text-center">
+            <Loader2 className="w-12 h-12 text-[#008751] mx-auto mb-4 animate-spin" />
+            <h3 className="font-bold mb-1">Création de votre demande</h3>
+            <p className="text-sm text-gray-500">
+              Initialisation sécurisée du dossier...
+            </p>
+            <p className="text-xs text-gray-400 mt-3">
+              La première demande peut prendre quelques secondes (initialisation cryptographique).
             </p>
           </CardContent>
         </Card>
