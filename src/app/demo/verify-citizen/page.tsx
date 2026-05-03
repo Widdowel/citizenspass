@@ -131,7 +131,7 @@ export default function DemoVerifyCitizenPage() {
           </h1>
           <p className="text-gray-500">
             Simule l&apos;intégration d&apos;une banque, d&apos;un employeur ou d&apos;une ambassade avec
-            l&apos;API CitizenPass. Aucun PDF n&apos;est échangé — uniquement les attributs nécessaires.
+            l&apos;API BJ PASS. Aucun PDF n&apos;est échangé — uniquement les attributs nécessaires.
           </p>
         </div>
 
@@ -228,7 +228,7 @@ export default function DemoVerifyCitizenPage() {
 
               <div className="bg-gray-50 rounded p-3 text-xs text-gray-600">
                 <strong>Comment ça marche :</strong> notre API crée la demande, génère un lien
-                d&apos;autorisation, et le citoyen est notifié dans son CitizenPass. Vous recevrez la
+                d&apos;autorisation, et le citoyen est notifié dans son BJ PASS. Vous recevrez la
                 réponse signée dès qu&apos;il aura validé biométriquement.
               </div>
             </CardContent>
@@ -284,7 +284,7 @@ function ResultView({
             </Link>
           )}
           <p className="text-xs text-gray-400">
-            En production : le citoyen reçoit une notification push dans son app CitizenPass.
+            En production : le citoyen reçoit une notification push dans son app BJ PASS.
             Ici on simule en t&apos;ouvrant la page d&apos;autorisation.
           </p>
 
@@ -369,7 +369,7 @@ function ResultView({
             </div>
             <p className="text-xs text-gray-500 flex items-start gap-1">
               <ShieldCheck className="w-3 h-3 mt-0.5 shrink-0 text-[#008751]" />
-              Cette réponse est vérifiable hors-ligne avec la clé publique CitizenPass de la Cour
+              Cette réponse est vérifiable hors-ligne avec la clé publique BJ PASS de la Cour
               d&apos;Appel de Cotonou.
             </p>
           </div>

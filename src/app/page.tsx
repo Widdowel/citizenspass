@@ -61,7 +61,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <TricolorLogo size="sm" />
-            <span className="font-bold text-lg">CitizenPass</span>
+            <span className="font-bold text-lg">BJ PASS</span>
           </div>
           <div className="flex gap-3 items-center">
             <Link href="/presentation">
@@ -136,7 +136,7 @@ export default function LandingPage() {
       <section className="py-20 bg-[#FAF7E8]">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Pourquoi <span className="text-[#008751]">CitizenPass</span> ?
+            Pourquoi <span className="text-[#008751]">BJ PASS</span> ?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f) => (
@@ -181,7 +181,7 @@ export default function LandingPage() {
             Pret a simplifier vos demarches ?
           </h2>
           <p className="text-white/80 text-lg mb-8">
-            Rejoignez des milliers de citoyens qui utilisent deja CitizenPass.
+            Rejoignez des milliers de citoyens qui utilisent deja BJ PASS.
           </p>
           <Link href="/auth">
             <Button
@@ -201,10 +201,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <TricolorLogo size="sm" />
-            <span className="text-white font-semibold">CitizenPass</span>
+            <span className="text-white font-semibold">BJ PASS</span>
           </div>
           <p className="text-sm">
-            &copy; 2026 CitizenPass — Republique du Benin. Tous droits reserves.
+            &copy; 2026 BJ PASS — Republique du Benin. Tous droits reserves.
           </p>
         </div>
       </footer>

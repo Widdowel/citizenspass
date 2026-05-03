@@ -52,7 +52,7 @@ export default async function DashboardLayout({
         <div className="p-5 border-b border-white/10">
           <Link href="/" className="flex items-center gap-2">
             <TricolorLogo size="sm" />
-            <span className="font-bold text-lg">CitizenPass</span>
+            <span className="font-bold text-lg">BJ PASS</span>
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">

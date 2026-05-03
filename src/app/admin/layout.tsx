@@ -48,7 +48,7 @@ export default async function AdminLayout({
           <Link href="/admin" className="flex items-center gap-2">
             <TricolorLogo size="sm" />
             <div>
-              <div className="font-bold text-sm">CitizenPass</div>
+              <div className="font-bold text-sm">BJ PASS</div>
               <div className="text-xs text-white/60">
                 {isGlobal && "Administration"}
                 {role === "ADMIN_GREFFE" && "Espace Greffe"}

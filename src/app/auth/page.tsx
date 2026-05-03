@@ -119,7 +119,7 @@ export default function AuthPage() {
           <div className="mx-auto mb-4">
             <TricolorLogo size="xl" />
           </div>
-          <CardTitle className="text-2xl">Connexion CitizenPass</CardTitle>
+          <CardTitle className="text-2xl">Connexion BJ PASS</CardTitle>
           <CardDescription>
             {step === "identifier" && "Saisissez votre Carte d'Identité Personnelle (CIP) ou votre carte de résident."}
             {step === "otp" && "Saisissez le code reçu par SMS sur le numéro déclaré à l'ANIP."}

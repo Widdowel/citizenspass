@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CitizenPass — Vos documents. Partout. Tout le temps.",
+  title: "BJ PASS — Vos documents. Partout. Tout le temps.",
   description:
     "Plateforme nationale de dématérialisation des documents administratifs. Demandez, téléchargez et vérifiez vos documents officiels en ligne.",
 };

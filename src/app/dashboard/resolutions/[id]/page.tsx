@@ -210,7 +210,7 @@ export default function ResolutionPage() {
                 <strong>Procédure accélérée.</strong>
                 <p className="text-xs mt-1">
                   Après paiement, le greffier reçoit votre demande en file prioritaire. Délai cible :
-                  quelques heures. Vous serez notifié(e) dans CitizenPass.
+                  quelques heures. Vous serez notifié(e) dans BJ PASS.
                 </p>
               </div>
             </div>
@@ -306,7 +306,7 @@ export default function ResolutionPage() {
           </Button>
 
           <p className="text-xs text-gray-400 text-center">
-            Vous restez dans CitizenPass pendant tout le processus. Pas besoin de vous déplacer.
+            Vous restez dans BJ PASS pendant tout le processus. Pas besoin de vous déplacer.
           </p>
         </CardContent>
       </Card>

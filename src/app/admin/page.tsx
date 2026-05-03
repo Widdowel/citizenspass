@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
                   {avgMs > 0 ? `${(avgMs / 1000).toFixed(1)}s` : "—"}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Vs. ~2-30 jours avant CitizenPass
+                  Vs. ~2-30 jours avant BJ PASS
                 </p>
               </div>
               <Clock className="w-10 h-10 text-purple-300" />

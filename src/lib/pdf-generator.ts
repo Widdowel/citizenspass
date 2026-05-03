@@ -438,8 +438,8 @@ export async function generateOfficialPdf(input: GeneratePdfInput): Promise<Uint
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${DOC_TYPES[input.type] ?? input.type} — ${input.data.fullName}`);
   pdf.setAuthor(AUTHORITIES[input.authorityCode].name);
-  pdf.setProducer("CitizenPass — République du Bénin");
-  pdf.setCreator("CitizenPass eGov Platform");
+  pdf.setProducer("BJ PASS — République du Bénin");
+  pdf.setCreator("BJ PASS eGov Platform");
   pdf.setSubject(`Document officiel ${input.serialNumber}`);
 
   const page = pdf.addPage([595, 842]); // A4

@@ -107,7 +107,7 @@ export default function AdminRequestsPage() {
                   </div>
                 )}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
-                  <strong>Aucune action possible depuis CitizenPass.</strong>
+                  <strong>Aucune action possible depuis BJ PASS.</strong>
                   <p className="mt-1">
                     Cette exception relève d&apos;une autorité tierce. Le citoyen doit régulariser sa situation
                     auprès de l&apos;autorité compétente (DGI pour le fiscal, greffe de la Cour d&apos;Appel pour

@@ -356,7 +356,7 @@ export default function RequestNewPage() {
                 <span className="font-mono">{formatXOF(pricing.stamp)}</span>
               </div>
               <div className="flex justify-between text-sm mb-3">
-                <span className="text-gray-600">Frais de service CitizenPass</span>
+                <span className="text-gray-600">Frais de service BJ PASS</span>
                 <span className="font-mono">{formatXOF(pricing.serviceFee)}</span>
               </div>
               <div className="flex justify-between text-base font-bold pt-3 border-t border-[#008751]/20">

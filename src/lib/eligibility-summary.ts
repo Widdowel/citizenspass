@@ -55,14 +55,14 @@ function buildEntry(type: string, citizen: CitizenRegistry | null): CatalogEntry
       return {
         ...base,
         status: "RESOLUTION_NEEDED",
-        reason: "Régularisation fiscale possible directement dans CitizenPass",
+        reason: "Régularisation fiscale possible directement dans BJ PASS",
       };
     }
     if (citizen.judicialStatus === "ONGOING" && (type === "CRIMINAL_RECORD" || type === "NON_CONVICTION_CERTIFICATE")) {
       return {
         ...base,
         status: "RESOLUTION_NEEDED",
-        reason: "Demande de revue par le greffe possible directement dans CitizenPass",
+        reason: "Demande de revue par le greffe possible directement dans BJ PASS",
       };
     }
     return {

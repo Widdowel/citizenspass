@@ -165,7 +165,7 @@ export default function OnboardingPage() {
               <div className="mx-auto mb-4">
                 <TricolorLogo size="xl" />
               </div>
-              <CardTitle className="text-2xl">Bienvenue sur CitizenPass</CardTitle>
+              <CardTitle className="text-2xl">Bienvenue sur BJ PASS</CardTitle>
               <CardDescription className="text-base">
                 Activons votre identité numérique en 4 étapes simples.
               </CardDescription>
@@ -400,7 +400,7 @@ export default function OnboardingPage() {
                   ) : (
                     <>
                       <Fingerprint className="w-4 h-4 mr-2" />
-                      Activer mon CitizenPass
+                      Activer mon BJ PASS
                     </>
                   )}
                 </Button>
@@ -416,7 +416,7 @@ export default function OnboardingPage() {
               <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">CitizenPass activé !</h2>
+              <h2 className="text-2xl font-bold mb-2">BJ PASS activé !</h2>
               <p className="text-gray-500 mb-6">
                 Votre identité numérique est prête. Redirection vers votre wallet...
               </p>

@@ -84,7 +84,7 @@ function VerifyContent() {
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <TricolorLogo size="sm" />
-            <span className="font-bold text-lg">CitizenPass</span>
+            <span className="font-bold text-lg">BJ PASS</span>
           </Link>
           <span className="text-xs text-gray-500">Service public de vérification</span>
         </div>

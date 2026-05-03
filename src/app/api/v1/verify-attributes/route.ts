@@ -11,7 +11,7 @@ function hashApiKey(k: string): string {
 
 // API publique B2B — un tiers (banque, employeur, ambassade) demande à
 // vérifier des attributs d'un citoyen sans recevoir le document complet.
-// Le citoyen autorise ensuite via son app CitizenPass.
+// Le citoyen autorise ensuite via son app BJ PASS.
 //
 // Auth : pour la démo, on accepte un header X-API-Key correspondant à
 // VerifierApp.apiKey. En production : mTLS + signature de la requête.

@@ -20,12 +20,13 @@ import {
   Database,
   Calendar,
   MapPin,
+  Globe2,
 } from "lucide-react";
 import { DOC_CATEGORIES, DOC_TYPES, DOC_AUTHORITY, AUTHORITIES, totalPrice } from "@/lib/constants";
 import { TricolorLogo, TricolorBar } from "@/components/tricolor";
 
 export const metadata = {
-  title: "CitizenPass — Plateforme nationale de délivrance instantanée",
+  title: "BJ PASS — Plateforme nationale de délivrance instantanée",
   description: "Document de présentation pour audiences institutionnelles",
 };
 
@@ -44,6 +45,7 @@ const navSections = [
   { id: "marche", label: "Marché" },
   { id: "modele", label: "Modèle économique" },
   { id: "phasage", label: "Phasage" },
+  { id: "cedeao", label: "Vision régionale" },
   { id: "legal", label: "Cadre légal" },
 ];
 
@@ -58,7 +60,7 @@ export default function PresentationPage() {
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <TricolorLogo size="sm" />
-            <span className="font-bold">CitizenPass</span>
+            <span className="font-bold">BJ PASS</span>
             <span className="text-xs text-gray-400 hidden sm:inline">— Présentation</span>
           </Link>
           <div className="hidden lg:flex gap-1 text-xs">
@@ -84,7 +86,7 @@ export default function PresentationPage() {
             Document de présentation institutionnelle — République du Bénin
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            CitizenPass
+            BJ PASS
           </h1>
           <p className="text-2xl md:text-3xl text-white/90 font-light mb-8 max-w-3xl">
             Plateforme nationale de délivrance instantanée des documents administratifs.
@@ -164,14 +166,14 @@ export default function PresentationPage() {
       </Section>
 
       {/* SOLUTION */}
-      <Section id="solution" eyebrow="03 · Solution" title="CitizenPass — l'orchestration numérique remplace le transport humain">
+      <Section id="solution" eyebrow="03 · Solution" title="BJ PASS — l'orchestration numérique remplace le transport humain">
         <div className="grid md:grid-cols-2 gap-10 items-start">
           <div>
             <p className="text-lg text-gray-700 mb-4">
-              <strong>L&apos;État dispose déjà des données.</strong> CitizenPass est l&apos;orchestrateur qui interroge automatiquement les bases natives (ANIP, Cour d&apos;Appel, DGI, mairies), génère le document signé cryptographiquement, et le délivre en quelques minutes — depuis l&apos;application mobile officielle sur le téléphone du citoyen.
+              <strong>L&apos;État dispose déjà des données.</strong> BJ PASS est l&apos;orchestrateur qui interroge automatiquement les bases natives (ANIP, Cour d&apos;Appel, DGI, mairies), génère le document signé cryptographiquement, et le délivre en quelques minutes — depuis l&apos;application mobile officielle sur le téléphone du citoyen.
             </p>
             <p className="text-lg text-gray-700">
-              Le citoyen ne quitte JAMAIS l&apos;application. Le paiement, la régularisation fiscale, l&apos;authentification, la vérification — tout se passe dans CitizenPass.
+              Le citoyen ne quitte JAMAIS l&apos;application. Le paiement, la régularisation fiscale, l&apos;authentification, la vérification — tout se passe dans BJ PASS.
             </p>
           </div>
           <div className="space-y-3">
@@ -336,7 +338,7 @@ export default function PresentationPage() {
             <h4 className="font-bold text-emerald-900 mb-3">Pour le citoyen</h4>
             <ul className="space-y-2 text-sm text-emerald-900">
               <li>✓ Le timbre fiscal officiel reste inchangé (recette État)</li>
-              <li>✓ Frais de service CitizenPass : <strong>50-100 FCFA / acte</strong> (vs. coûts cachés actuels de 1000-3000 FCFA)</li>
+              <li>✓ Frais de service BJ PASS : <strong>50-100 FCFA / acte</strong> (vs. coûts cachés actuels de 1000-3000 FCFA)</li>
               <li>✓ Aucun déplacement, aucune attente</li>
             </ul>
           </div>
@@ -382,12 +384,99 @@ export default function PresentationPage() {
         </div>
       </Section>
 
+      {/* VISION RÉGIONALE — CEDEAO PASS */}
+      <Section id="cedeao" eyebrow="11 · Vision régionale" title="Du BJ PASS au CEDEAO PASS — le Bénin pionnier d'identité numérique en Afrique de l'Ouest" dark>
+        <div className="grid md:grid-cols-2 gap-10 items-start mb-10">
+          <div>
+            <p className="text-lg text-gray-700 mb-4">
+              <strong>BJ PASS est conçu dès le départ comme un modèle réplicable.</strong>{" "}
+              Une fois éprouvé au Bénin, son architecture est transposable à chacun des 14 autres
+              États membres de la CEDEAO, qui partagent un cadre juridique commun (Acte additionnel
+              A/SA.1/01/07 sur la signature électronique), une carte d&apos;identité biométrique
+              CEDEAO, et une libre circulation déjà actée.
+            </p>
+            <p className="text-lg text-gray-700">
+              Le passage à <strong>CEDEAO PASS</strong> est l&apos;étape qui transforme le Bénin
+              de simple utilisateur d&apos;identité numérique à <strong>fournisseur régional</strong> :
+              chaque pays exploite son propre <em>XX PASS</em> souverain, et un protocole d&apos;interopérabilité
+              CEDEAO PASS permet à un Béninois de prouver son identité au Sénégal, de retirer son casier
+              au Ghana, ou de vérifier un quitus fiscal nigérian — sans déplacement.
+            </p>
+          </div>
+          <div className="bg-white rounded-2xl border-2 border-[#FCD116]/40 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Globe2 className="w-7 h-7 text-[#008751]" />
+              <h4 className="font-bold text-lg">15 États membres CEDEAO</h4>
+            </div>
+            <div className="grid grid-cols-2 gap-y-1 gap-x-3 text-sm text-gray-700">
+              <div>🇧🇯 Bénin (pilote)</div>
+              <div>🇧🇫 Burkina Faso</div>
+              <div>🇨🇻 Cap-Vert</div>
+              <div>🇨🇮 Côte d&apos;Ivoire</div>
+              <div>🇬🇲 Gambie</div>
+              <div>🇬🇭 Ghana</div>
+              <div>🇬🇳 Guinée</div>
+              <div>🇬🇼 Guinée-Bissau</div>
+              <div>🇱🇷 Liberia</div>
+              <div>🇲🇱 Mali</div>
+              <div>🇳🇪 Niger</div>
+              <div>🇳🇬 Nigeria</div>
+              <div>🇸🇳 Sénégal</div>
+              <div>🇸🇱 Sierra Leone</div>
+              <div>🇹🇬 Togo</div>
+            </div>
+            <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
+              <strong>~400 millions</strong> de citoyens · marché total estimé{" "}
+              <strong>~600 milliards FCFA / an</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="bg-white rounded-xl p-5 border border-gray-200">
+            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Phase 1</div>
+            <h4 className="font-bold mb-1">BJ PASS national</h4>
+            <p className="text-sm text-gray-600">
+              Déploiement Bénin avec les 18 documents administratifs et l&apos;écosystème complet
+              (paiement, résolutions, vérifications B2B).
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-200">
+            <div className="text-xs uppercase font-bold text-[#008751] mb-2">Phase 2</div>
+            <h4 className="font-bold mb-1">Réplication bilatérale</h4>
+            <p className="text-sm text-gray-600">
+              Transfert technologique vers 2-3 États voisins (Togo, Côte d&apos;Ivoire, Niger).
+              Chaque pays exploite son propre PASS souverain sur la même architecture.
+            </p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-[#FCD116]/40">
+            <div className="text-xs uppercase font-bold text-[#FCD116] mb-2">Phase 3</div>
+            <h4 className="font-bold mb-1">CEDEAO PASS — interopérabilité</h4>
+            <p className="text-sm text-gray-600">
+              Protocole commun de fédération d&apos;identités. Un citoyen authentifié dans son
+              pays peut accéder aux services administratifs des autres États membres, dans le
+              respect total de la souveraineté de chacun.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 bg-gradient-to-r from-[#008751]/10 via-[#FCD116]/10 to-[#E11829]/10 rounded-xl p-6 border border-[#FCD116]/30">
+          <h4 className="font-bold mb-2">Atout stratégique pour le Bénin</h4>
+          <p className="text-sm text-gray-700">
+            En portant la première initiative <strong>XX PASS</strong> de la sous-région, le Bénin
+            se positionne comme leader technologique régional, attire l&apos;intérêt des bailleurs
+            multilatéraux (BAD, Banque mondiale, BOAD, BIDC), et exporte un savoir-faire numérique
+            créateur d&apos;emplois qualifiés. Une opportunité de diplomatie numérique ouest-africaine.
+          </p>
+        </div>
+      </Section>
+
       {/* CADRE LÉGAL */}
-      <Section id="legal" eyebrow="11 · Cadre légal" title="Conformité totale au droit béninois">
+      <Section id="legal" eyebrow="12 · Cadre légal" title="Conformité totale au droit béninois">
         <div className="grid md:grid-cols-2 gap-6">
           <Legal
             title="Loi 2017-20 — Code numérique du Bénin"
-            desc="Reconnaît la signature électronique et le document numérique avec la même valeur que le papier. CitizenPass s'inscrit nativement dans ce cadre."
+            desc="Reconnaît la signature électronique et le document numérique avec la même valeur que le papier. BJ PASS s'inscrit nativement dans ce cadre."
           />
           <Legal
             title="Loi 2009-09 — Protection des données"
@@ -395,11 +484,11 @@ export default function PresentationPage() {
           />
           <Legal
             title="Code de procédure pénale"
-            desc="Le casier judiciaire reste émis par la Cour d'Appel. CitizenPass est un guichet d'orchestration, pas une autorité émettrice. La signature crypto est apposée par la clé de la Cour."
+            desc="Le casier judiciaire reste émis par la Cour d'Appel. BJ PASS est un guichet d'orchestration, pas une autorité émettrice. La signature crypto est apposée par la clé de la Cour."
           />
           <Legal
             title="Code de l'état civil"
-            desc="Les actes restent certifiés par la mairie de naissance/résidence. CitizenPass automatise la délivrance, l'autorité reste la mairie."
+            desc="Les actes restent certifiés par la mairie de naissance/résidence. BJ PASS automatise la délivrance, l'autorité reste la mairie."
           />
         </div>
         <div className="mt-8 bg-gray-50 rounded-xl p-6 text-sm text-gray-700">
@@ -436,7 +525,7 @@ export default function PresentationPage() {
             </Link>
           </div>
           <p className="text-xs text-white/60 mt-12">
-            CitizenPass — République du Bénin · Souveraineté numérique · Document de présentation v1
+            BJ PASS — République du Bénin · Souveraineté numérique · Document de présentation v1
           </p>
         </div>
       </section>

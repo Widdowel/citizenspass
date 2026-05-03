@@ -5,7 +5,7 @@ import { logAudit, AuditAction } from "@/lib/audit";
 
 export const maxDuration = 60;
 
-// L'admin de CitizenPass NE PEUT PAS débloquer les exceptions qui relèvent
+// L'admin de BJ PASS NE PEUT PAS débloquer les exceptions qui relèvent
 // d'autorités tierces (DGI, greffe). Cette route est réduite à : ajouter une
 // note d'audit pour traçabilité.
 export async function PATCH(

@@ -104,7 +104,7 @@ export default async function RequestsPage() {
                           </div>
                           <div className="text-orange-700 text-xs">
                             {req.resolution.type === "FISCAL_DEBT"
-                              ? "Payez votre dette fiscale dans CitizenPass — quitus généré immédiatement."
+                              ? "Payez votre dette fiscale dans BJ PASS — quitus généré immédiatement."
                               : "Demandez une revue accélérée par le greffe — sans déplacement."}
                           </div>
                         </div>
