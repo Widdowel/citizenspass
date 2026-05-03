@@ -113,7 +113,7 @@ export type AuthorityCode =
   | "MAIRIE_COTONOU"
   | "DGI"
   | "ANIP"
-  | "DTT"
+  | "ANATT"
   | "DEPLA"
   | "RCCM"
   | "MIN_EDUCATION";
@@ -139,14 +139,14 @@ export const AUTHORITIES: Record<AuthorityCode, { name: string; shortName: strin
     shortName: "ANIP",
     subtitle: "Présidence de la République",
   },
-  DTT: {
-    name: "Direction des Transports Terrestres",
-    shortName: "DTT",
+  ANATT: {
+    name: "Agence Nationale des Transports Terrestres",
+    shortName: "ANaTT",
     subtitle: "Ministère des Infrastructures et Transports",
   },
   DEPLA: {
-    name: "Direction de l'Émigration, Police de l'Air et des Frontières",
-    shortName: "DEPLA",
+    name: "Direction de l'Émigration et de l'Immigration",
+    shortName: "DEI",
     subtitle: "Ministère de l'Intérieur et de la Sécurité Publique",
   },
   RCCM: {
@@ -192,8 +192,8 @@ export const DOC_AUTHORITY: Record<string, AuthorityCode> = {
   RCCM_REGISTRATION: "RCCM",
   RCCM_EXTRACT: "RCCM",
   // DTT
-  DRIVER_LICENSE_NEW: "DTT",
-  DRIVER_LICENSE_INTERNATIONAL: "DTT",
+  DRIVER_LICENSE_NEW: "ANATT",
+  DRIVER_LICENSE_INTERNATIONAL: "ANATT",
   // Ministère Éducation
   BEPC_CERTIFICATE: "MIN_EDUCATION",
   BAC_DIPLOMA: "MIN_EDUCATION",

@@ -123,11 +123,17 @@ export default function PresentationPage() {
               du document tamponné reste manuel.
             </p>
             <p className="text-lg text-gray-700 mt-4">
-              <strong className="text-[#008751]">BJ PASS unifie cette expérience pour le citoyen.</strong>{" "}
-              Une identité numérique unique (CIP + biométrie), un wallet officiel unique, une délivrance
-              instantanée signée crypto pour les <strong>30 documents administratifs personnels les plus
-              demandés</strong>. Le portail service-public.bj reste l&apos;écosystème de services. BJ PASS
-              est <strong>l&apos;application citoyenne mobile qui réunit tout</strong>.
+              L&apos;ASIN dispose déjà de l&apos;infrastructure de souveraineté numérique : <strong>PKI nationale</strong>{" "}
+              (certificats d&apos;identité numérique Local / Virtual / Mobile ID), <strong>signature électronique
+              légalement reconnue</strong> (Loi 2017-20), e-visa, casier judiciaire B3 en ligne, attestation fiscale
+              en ligne, etc. Les briques techniques existent.
+            </p>
+            <p className="text-lg text-gray-700 mt-4">
+              <strong className="text-[#008751]">BJ PASS s&apos;appuie sur ces briques et les unifie en une seule expérience citoyenne.</strong>{" "}
+              Une seule app mobile, un seul wallet, une seule authentification, un catalogue personnalisé
+              de toutes les démarches éligibles, le pipeline automatique de bout en bout pour les documents
+              les plus demandés. Pas un nouveau silo de plus — la <strong>face citoyen unifiée</strong>{" "}
+              de l&apos;écosystème ASIN.
             </p>
           </div>
           <div className="bg-[#FAF7E8] rounded-2xl p-6 space-y-4 border border-[#FCD116]/30">
@@ -268,7 +274,7 @@ export default function PresentationPage() {
       </Section>
 
       {/* DOCUMENTS */}
-      <Section id="documents" eyebrow="05 · Documents intégrés" title="18 documents administratifs couvrant 90% des demandes citoyennes">
+      <Section id="documents" eyebrow="05 · Documents intégrés" title="30 documents administratifs ciblés — les plus demandés du citoyen et de la PME">
         <p className="text-lg text-gray-600 mb-8">
           Les types de documents listés ci-dessous sont déjà intégrés dans la démo live. Architecture extensible : tout nouveau document se ramène à 4 paramètres (autorité, format PDF, vérifications, tarif).
         </p>
